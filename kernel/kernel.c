@@ -129,6 +129,10 @@ void kernel_main(){
 	"Felipe Dutra, Gabriella Pompeu e Raynner Meza.\n";
 
 	terminal_initialize();
+	
+	uint8_t buffer[5];
+	memset(buffer, 'A', 5);
+
 	terminal_write_string("==================================================\n");
 
 	terminal_write_string("          Bem-vindo ao CavalOS!\n");
@@ -136,4 +140,8 @@ void kernel_main(){
 	terminal_write_string(DEVS);
 
 	terminal_write_string("==================================================\n");
+
+	for (int i = 0; i < 5; i++){
+		terminal_putchar(buffer[i]);
+	}
 }
