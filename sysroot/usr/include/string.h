@@ -5,6 +5,10 @@
 
 size_t strlen(const char* str);
 
-void* memset(void* ptr, int value, size_t num);
+void* memset(void* ptr, int value, size_t num); /*preenche memória com um valor*/
+
+void* memcpy(void *dest, const void *src, size_t num); /*copia dados de uma região para outra*/
+
+void* memmove(void* destination, const void* source, size_t num);
 
 #endif
