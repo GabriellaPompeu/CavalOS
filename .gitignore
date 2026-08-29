@@ -1,7 +1,18 @@
+# Arquivos compilados
 *.o
+*.a
+
+# Kernel compilado
+mykernel.bin
+
+# ISO
 *.iso
-*.img
-*.bin
-*.elf
+
+# Diretório temporário do GRUB
+isodir/
+
+# Diretórios de build
 build/
-dist/
+
+# Arquivos do sistema
+*.img

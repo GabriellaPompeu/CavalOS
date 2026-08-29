@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h> 
+#include <stdint.h>
+#include <string.h>
 
 #if defined(__linux__)
 #endif
@@ -8,6 +9,15 @@
 #if !defined(__i386__)
 #error "Tem q compilar em ix86-elf filho..."
 #endif
+
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
+#define VGA_MEMORY 0xB8000
+
+size_t terminal_row;
+size_t terminal_column;
+uint8_t terminal_color;
+uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
 enum vga_color {
 	BLACK = 0,
@@ -35,21 +45,6 @@ static inline uint8_t vga_entry_color(enum vga_color foreground, enum vga_color 
 static inline uint16_t vga_entry(unsigned char uc, uint8_t color){
     return (uint16_t) uc | (uint16_t) color << 8;
 }
-
-size_t strlen(const char* str){
-	size_t len = 0;
-	while (str[len]) len++;
-	return len;
-}
-
-#define VGA_WIDTH 80
-#define VGA_HEIGHT 25
-#define VGA_MEMORY 0xB8000
-
-size_t terminal_row;
-size_t terminal_column;
-uint8_t terminal_color;
-uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
 void terminal_initialize(){
 	terminal_color = vga_entry_color(LIGHT_GREY, BLACK);

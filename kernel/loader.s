@@ -43,3 +43,4 @@ _start:
     jmp 1b # caso algo faça o processador retornar, voltamos para hlt
 
 .size _start, . - _start # tamanho start = posição atual - end inicial de start
+
