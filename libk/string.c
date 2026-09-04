@@ -30,3 +30,29 @@ void* memcpy(void *dest, const void *src, size_t num){
 
 	return dest;
 }
+
+char* strcpy(void* dest, const char* src){
+	char* destino = (char*) dest;
+	size_t i = 0;
+
+	while(src[i] != '\0'){
+		*destino = src[i];
+		destino++;
+		i++;
+	}
+
+	*destino = src[i];
+	return (char*) dest;
+}
+
+int strcmp(const char* str1, const char* str2){
+	char a = *str1, b = *str2;
+
+	while((a == b) && a != '\0'){
+		a = *(++str1);
+		b = *(++str2);
+	}
+
+	if(a == '\0' && b == '\0') return 0;
+	return 1;
+}
