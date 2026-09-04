@@ -11,4 +11,8 @@ void* memcpy(void *dest, const void *src, size_t num); /*copia dados de uma regi
 
 void* memmove(void* destination, const void* source, size_t num);
 
+char* strcpy(void* dest, const char* src);
+
+int strcmp(const char* str1, const char* str2);
+
 #endif
