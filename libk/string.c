@@ -316,3 +316,59 @@ char* strtok(char* original, const char* delimitadores){
     tmp = original;
     return token_achado;
 }
+
+char* strlwr(char* str){
+	char* tmp = str;
+
+	while(*str != '\0'){
+		if(*str >= 'A' && *str <= 'Z') *str += 'a' - 'A';
+		str++;
+	}
+	return tmp;
+}
+
+char* strupr(char* str){
+	char* tmp = str;
+
+	while(*str != '\0'){
+		if(*str >= 'a' && *str <= 'z') *str = *str - ('a' - 'A');
+		str++;
+	}
+	return tmp;
+}
+
+char* stpcpy(char* dest, const char* str){
+	while(*str != '\0') *dest++ = *str++;
+	*dest = '\0';
+	return dest;
+}
+
+//Tem que ver como que o atoi vai tratar a questão de negativos e caracteres.
+int atoi(const char* str){
+	int res = 0;
+	int negativo = 0;
+	while(*str < '0' || *str > '9'){
+		if(*str == '-') negativo++;
+		str++;
+	}
+
+	while(*str >= '0' && *str <= '9'){
+		res = res * 10 + (*str - '0');
+		str++;
+	}
+	if(negativo) return -res;
+	return res;
+}
+
+void* memchr(const void* ptr, int value, size_t num){
+    const unsigned char* str = ptr;
+
+    while(num--){
+        if(*str == (unsigned char)value)
+            return (void*)str;
+
+        str++;
+    }
+
+    return NULL;
+}
