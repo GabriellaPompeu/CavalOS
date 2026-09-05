@@ -89,8 +89,9 @@ int strncmp(const char* a, const char* b, size_t num){
 	int res = 0;
 
 	while(num > 0){
-		if((res = *a++ - *b++) != 0) return res;
-		--num;
+		if((res = *a - *b) != 0) return res;
+		if(*a == '\0') return 0;
+		--num; a++; b++;
 	}
 	return 0;
 }
