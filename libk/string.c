@@ -56,3 +56,35 @@ int strcmp(const char* str1, const char* str2){
 	if(a == '\0' && b == '\0') return 0;
 	return 1;
 }
+
+void* memmove(void* dest, const void* src, size_t num){
+	char* d = (char*) dest;
+	const char* origem = (char*) src;
+
+	if(dest <= src){
+		while(num > 0){
+			*d++ = *origem++;
+			--num;
+		}
+	}else{
+		d += num - 1;
+		origem += num - 1;
+		while(num > 0){
+			*d-- = *origem--;
+			--num;
+		}
+	}
+	return dest;
+}
+
+int memcmp(const void* str1, const void* str2, size_t num){
+	const unsigned char* a = (const unsigned char*) str1, *b = (const unsigned char*) str2;
+	int res = 0;
+
+	while(num > 0){
+		if((res = *a - *b) != 0) return res;
+		a++; b++;
+		--num;
+	}
+	return 0;
+}
