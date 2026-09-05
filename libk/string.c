@@ -33,15 +33,29 @@ void* memcpy(void *dest, const void *src, size_t num){
 
 char* strcpy(void* dest, const char* src){
 	char* destino = (char*) dest;
-	size_t i = 0;
 
-	while(src[i] != '\0'){
-		*destino = src[i];
-		destino++;
-		i++;
+	while(*src != '\0') *destino++ = *src++;
+
+	*destino = '\0';
+	return (char*) dest;
+}
+
+char* strncpy(void* dest, const char* src, size_t num){
+	char* destino = (char*) dest;
+
+	while(num > 0 && *src != '\0'){
+		*destino++ = *src++;
+		--num;
 	}
 
-	*destino = src[i];
+	*destino++ = '\0';
+	num--;
+
+	while(num > 0){
+		*destino++ = '\0';
+		--num;
+	} 
+
 	return (char*) dest;
 }
 
@@ -169,4 +183,25 @@ char* strstr(const char* str1, const char* str2){
 		}
 	}
 	return NULL;
+}
+
+char* strcat(char* dest, char* src){
+	char* tmp = dest;
+
+	while(*dest != '\0') dest++;
+	while(*src != '\0') *dest++ = *src++;
+	*dest = '\0';
+	return tmp;
+}
+
+char* strncat(char* dest, char* src, size_t num){
+	char* tmp = dest;
+
+	while(*dest != '\0') dest++;
+	while(num > 0 && *src != '\0'){
+		*dest++ = *src++;
+		--num;
+	}
+	*dest = '\0';
+	return tmp;
 }
