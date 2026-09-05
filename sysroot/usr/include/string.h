@@ -15,6 +15,18 @@ char* strcpy(void* dest, const char* src);
 
 int strcmp(const char* str1, const char* str2);
 
+int strncmp(const char* a, const char* b, size_t num);
+
 int memcmp(const void* str1, const void* str2, size_t num);
+
+int strncasecmp(const char* str1, const char* str2, size_t num);
+
+int strcasecmp(const char* str1, const char* str2);
+
+char* strchr(const char* str, int c);
+
+char* strrchr(const char* str, int c);
+
+char* strstr(const char* str1, const char* str2);
 
 #endif
