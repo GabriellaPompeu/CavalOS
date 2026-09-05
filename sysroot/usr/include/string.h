@@ -13,6 +13,8 @@ void* memmove(void* destination, const void* source, size_t num);
 
 char* strcpy(void* dest, const char* src);
 
+char* strncpy(void* dest, const char* src, size_t num);
+
 int strcmp(const char* str1, const char* str2);
 
 int strncmp(const char* a, const char* b, size_t num);
@@ -28,5 +30,9 @@ char* strchr(const char* str, int c);
 char* strrchr(const char* str, int c);
 
 char* strstr(const char* str1, const char* str2);
+
+char* strcat(char* dest, char* src);
+
+char* strncat(char* dest, char* src, size_t num);
 
 #endif
