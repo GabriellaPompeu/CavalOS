@@ -20,7 +20,7 @@ void* memset(void* ptr, int value, size_t num){
 }
 
 void* memcpy(void *dest, const void *src, size_t num){
-	uint8_t *destino = (uint8_t *)dest;
+	char *destino = (uint8_t *)dest;
 	const uint8_t *origem = (const uint8_t *)src;
 
 	for (size_t i = 0; i < num; i++){
@@ -30,6 +30,23 @@ void* memcpy(void *dest, const void *src, size_t num){
 
 	return dest;
 }
+
+/* strcpy from Maria Clara
+
+char* strcpy(void* dest, const char* src){
+    char* destino = (char*) dest;
+    size_t i = 0;
+
+    while(src[i] != '\0'){
+        *destino = src[i];
+        destino++;
+        i++;
+    }
+
+    *destino = src[i];
+    return (char*) dest;
+}
+*/
 
 char* strcpy(void* dest, const char* src){
 	char* destino = (char*) dest;
@@ -204,4 +221,98 @@ char* strncat(char* dest, char* src, size_t num){
 	}
 	*dest = '\0';
 	return tmp;
+}
+
+size_t strspn(const char* str1, const char* str2){
+	const char* tmp = str2;
+	size_t cont = 0;
+
+	while(*str1 != '\0'){
+		while(*str2 != *str1 && *str2 != '\0') str2++;
+		if(*str2 == '\0') return cont;
+		++cont;
+		str1++;
+		str2 = tmp;
+	}
+
+	return cont;
+}
+
+size_t strcspn(const char* str1, const char* str2){
+	const char* tmp = str2;
+	size_t cont = 0;
+
+	while(*str1 != '\0'){
+		while(*str2 != *str1 && *str2 != '\0') str2++;
+			if(*str2 == *str1) return cont;
+			++cont;
+			str1++;
+			str2 = tmp;
+	}
+	return cont;
+}
+
+char* strpbrk(const char* str1, const char* str2){
+	const char* tmp = str2;
+
+	while(*str1 != '\0'){
+		while(*str2 != *str1 && *str2 != '\0') str2++;
+		if(*str1 == *str2) return (char*)str1;
+		str1++;
+		str2 = tmp;
+	}
+	return NULL;
+}
+
+char* strtok(char* original, const char* delimitadores){
+    static char* tmp;
+    const char* delim;
+    char* token_achado;
+
+    // Se uma nova string for passada, reinicia o ponteiro estático
+    if (original)
+        tmp = original;
+    else
+        original = tmp;
+
+    // Pula delimitadores consecutivos que estejam no início do token
+    while (*original != '\0'){
+        delim = delimitadores;
+
+        while (*delim != '\0' && *original != *delim)
+            delim++;
+
+        if (*original != *delim)
+            break;
+
+        original++;
+    }
+
+    if (*original == '\0'){
+        tmp = original;
+        return NULL;
+    }
+
+    // Guarda o início do token válido
+    token_achado = original;
+
+    // Percorre o token até encontrar o próximo delimitador ou o fim da string
+    while (*original != '\0'){
+        delim = delimitadores;
+
+        while (*delim != '\0' && *original != *delim)
+            delim++;
+
+        if (*original == *delim){
+            *original = '\0';
+            tmp = original + 1;
+            return token_achado;
+        }
+
+        original++;
+    }
+
+    // Se chegou ao fim da string (encontrou o último token)
+    tmp = original;
+    return token_achado;
 }
