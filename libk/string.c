@@ -65,9 +65,6 @@ char* strncpy(void* dest, const char* src, size_t num){
 		--num;
 	}
 
-	*destino++ = '\0';
-	num--;
-
 	while(num > 0){
 		*destino++ = '\0';
 		--num;
