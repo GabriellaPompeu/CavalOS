@@ -35,4 +35,12 @@ char* strcat(char* dest, char* src);
 
 char* strncat(char* dest, char* src, size_t num);
 
+size_t strspn(const char* str1, const char* str2);
+
+size_t strcspn(const char* str1, const char* str2);
+
+char* strpbrk(const char* str1, const char* str2);
+
+char* strtok(char* original, const char* delimitadores);
+
 #endif
