@@ -43,4 +43,14 @@ char* strpbrk(const char* str1, const char* str2);
 
 char* strtok(char* original, const char* delimitadores);
 
+char* strlwr(char* str);
+
+char* strupr(char* str);
+
+char* stpcpy(char* dest, const char* str);
+
+int atoi(const char* str);
+
+void* memchr(const void* ptr, int value, size_t num);
+
 #endif
