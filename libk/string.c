@@ -20,7 +20,7 @@ void* memset(void* ptr, int value, size_t num){
 }
 
 void* memcpy(void *dest, const void *src, size_t num){
-	char *destino = (uint8_t *)dest;
+	uint8_t *destino = (uint8_t *)dest;
 	const uint8_t *origem = (const uint8_t *)src;
 
 	for (size_t i = 0; i < num; i++){
@@ -85,7 +85,7 @@ int strcmp(const char* str1, const char* str2){
 	}
 
 	if(a == '\0' && b == '\0') return 0;
-	return 1;
+	return a - b;
 }
 
 int strncmp(const char* a, const char* b, size_t num){
@@ -170,20 +170,21 @@ char* strchr(const char* str, int c){
 }
 
 char* strrchr(const char* str, int c){
-	char* tmp = NULL, valor = (char) c;
+	const char* tmp = NULL;
+	char valor = (char) c;
 
 	while(*str != '\0'){
 		if(*str == valor) tmp = str;
 		str++;
 	}
-	if(valor == '\0') return str;
-	return tmp;
+	if(valor == '\0') return (char*)str;
+	return (char*)tmp;
 }
 
 char* strstr(const char* str1, const char* str2){
-	if(*str2 == '\0') return str1;
+	if(*str2 == '\0') return (char*)str1;
 
-	char* a = str1, *b = str2;
+	const char* a = str1, *b = str2;
 
 	while(*str1 != '\0'){
 		if(*str1 != *b) str1++;
@@ -192,7 +193,7 @@ char* strstr(const char* str1, const char* str2){
 			a = str1;
 			while(*str2 == *str1){
 				str1++; str2++;
-				if(*str2 == '\0') return a;
+				if(*str2 == '\0') return (char*)a;
 				if(*str1 == '\0') return NULL;
 			}
 
