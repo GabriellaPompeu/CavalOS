@@ -15,4 +15,6 @@ char* strcpy(void* dest, const char* src);
 
 int strcmp(const char* str1, const char* str2);
 
+int memcmp(const void* str1, const void* str2, size_t num);
+
 #endif
