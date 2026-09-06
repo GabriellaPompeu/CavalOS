@@ -76,7 +76,7 @@ char* strncpy(void* dest, const char* src, size_t num){
 int strcmp(const char* str1, const char* str2){
 	const unsigned char* a = (const unsigned char*) str1, *b = (const unsigned char*) str2;
 
-	while((*a == *b) && *a != '\0'){ a++; b++}
+	while((*a == *b) && *a != '\0'){ a++; b++;}
 
 	return (int)*a - (int)*b;
 }
