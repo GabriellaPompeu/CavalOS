@@ -74,31 +74,28 @@ char* strncpy(void* dest, const char* src, size_t num){
 }
 
 int strcmp(const char* str1, const char* str2){
-	char a = *str1, b = *str2;
+	const unsigned char* a = (const unsigned char*) str1, *b = (const unsigned char*) str2;
 
-	while((a == b) && a != '\0'){
-		a = *(++str1);
-		b = *(++str2);
-	}
+	while((*a == *b) && *a != '\0'){ a++; b++}
 
-	if(a == '\0' && b == '\0') return 0;
-	return a - b;
+	return (int)*a - (int)*b;
 }
 
-int strncmp(const char* a, const char* b, size_t num){
-	int res = 0;
+int strncmp(const char* str1, const char* str2, size_t num){
+	const unsigned char* a = (const unsigned char*) str1;
+	const unsigned char* b = (const unsigned char*) str2;
 
 	while(num > 0){
-		if((res = *a - *b) != 0) return res;
+		if(*a != *b) return (int)*a - (int)*b;
 		if(*a == '\0') return 0;
-		--num; a++; b++;
+		a++; b++; --num;
 	}
 	return 0;
 }
 
 void* memmove(void* dest, const void* src, size_t num){
 	char* d = (char*) dest;
-	const char* origem = (char*) src;
+	const char* origem = (const char*) src;
 
 	if(dest <= src){
 		while(num > 0){
