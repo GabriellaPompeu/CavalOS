@@ -125,35 +125,36 @@ int memcmp(const void* str1, const void* str2, size_t num){
 	return 0;
 }
 
+static unsigned char lower(unsigned char c){
+	if(c >= 'A' && c <= 'Z') c += 'a' - 'A';
+	return c;
+}
+
 int strncasecmp(const char* str1, const char* str2, size_t num){
-	//Yes, Maria Clara, it had better be nice with your friends
-	char a, b;
-	int res = 0;
+	const unsigned char* p1 = (const unsigned char*) str1;
+	const unsigned char* p2 = (const unsigned char*) str2;
 
 	while(num > 0){
-		a = *str1++;
-		b = *str2++;
-		if(a == '\0' && b == '\0') return 0;
-		if(a >= 'A' && a <= 'Z') a += 'a' - 'A';
-		if(b >= 'A' && b <= 'Z') b += 'a' - 'A';
-		if((res = a - b) != 0) return res;
-		--num;
+		unsigned char a = lower(*p1), b = lower(*p2);
+
+		if(a != b) return (int)a - (int)b;
+		if(a == '\0') return 0;
+
+		p1++; p2++; --num;
 	}
 	return 0;
 }
 
 int strcasecmp(const char* str1, const char* str2){
-	char a = *str1++, b = *str2++;
-	int res = 0;
+	const unsigned char* p1 = (const unsigned char*) str1;
+	const unsigned char* p2 = (const unsigned char*) str2;
 
-	while(a != '\0' || b != '\0'){
-		if(a >= 'A' && a <= 'Z') a += 'a' - 'A';
-		if(b >= 'A' && b <= 'Z') b += 'a' - 'A';
-		if((res = a - b) != 0) return res;
-		a = *str1++;
-		b = *str2++;
+	for(;;){
+		unsigned char a = lower(*p1++), b = lower(*p2++);
+
+		if(a != b) return (int)a - (int)b;
+		if(a == '\0') return 0;
 	}
-	return a - b;
 }
 
 char* strchr(const char* str, int c){
