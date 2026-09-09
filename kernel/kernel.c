@@ -2,8 +2,10 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdarg.h>
 
 #if defined(__linux__)
+#error "Embora pareça, isso aqui n é Linux n..."
 #endif
 
 #if !defined(__i386__)
@@ -64,11 +66,11 @@ void terminal_setcolor(uint8_t color){
 }
 
 void terminal_scroll(){
-	for (size_t y = VGA_HEIGHT - 1; y > 0; y--){
+	for (size_t y = 1; y < VGA_HEIGHT; y++){
 		for (size_t x = 0; x < VGA_WIDTH; x++){
 			const size_t origem = y * VGA_WIDTH + x;
-			const size_t destino = (y-1) * VGA_WIDTH + x;
-			
+			const size_t destino = (y - 1) * VGA_WIDTH + x;
+
 			terminal_buffer[destino] = terminal_buffer[origem];
 		}
 	}
@@ -116,6 +118,67 @@ void terminal_write_string(const char* data){
 	terminal_write(data, strlen(data));
 }
 
+static void terminal_write_int(int value){
+	char buffer[12];
+	size_t i = 0;
+
+	if (value == 0){
+		terminal_putchar('0');
+		return;
+	} else {
+		while (value > 0){
+			buffer[i++] = '0' + (value % 10); /*transforma o digito numerico no caractere correspondente pq em ASCII '0' = 48*/
+			value /= 10;
+		}
+	
+		while (i > 0) terminal_putchar(buffer[--i]);
+	}
+}
+
+void terminal_printf(const char* format, ...){
+	va_list args;
+	va_start(args, format);
+
+	for (size_t i = 0; format[i] != '\0'; i++){
+		if (format[i] != '%'){
+			terminal_putchar(format[i]);
+			continue;
+		} else {
+			i++;
+			
+			switch (format[i]){
+				case 'c':{
+					char c = (char)va_arg(args, int);
+					terminal_putchar(c);
+					break;
+				}
+				case 's':{
+					const char* str = va_arg(args, const char*);
+					terminal_write_string(str);
+					break;
+				}
+				case 'd':{
+					int value = va_arg(args, int);
+					terminal_write_int(value);
+					break;
+				}
+				case '%':{
+					terminal_putchar('%');
+					break;
+				}
+				default:{
+					terminal_putchar('%');
+					terminal_putchar(format[i]);
+					break;
+				}
+			}
+		}
+	}
+
+	va_end(args);
+}
+
+
 /*constructor_t = nome q criamos para representar um ponteiro para uma função sem argumentos e sem retorno*/
 typedef void (*constructor_t)(void);
 
@@ -131,7 +194,7 @@ static void call_global_constructors(void){
 
 static int constructor_test = 0;
 
-__attribute__((constructor))
+__attribute__((constructor)) /*informa ao GCC q isso deve ser tratado como um construtor*/
 static void teste_constructor(void){
 	constructor_test = 42;
 }
@@ -151,9 +214,6 @@ void kernel_main(){
 	call_global_constructors();
 
 	terminal_initialize();
-
-	if (constructor_test == 42) terminal_write_string("Construtor executado com sucesso!\n");
-	else terminal_write_string("Deu ruim cr...\n");
 	
 	terminal_write_string("==================================================\n");
 	
@@ -165,8 +225,17 @@ void kernel_main(){
 
 	uint8_t buffer[5];
 	memset(buffer, 'A', 5);
-	
-	terminal_write_string("\n\nTESTES DA LIBK:\n");
+
+	if (constructor_test == 42) terminal_write_string("Construtor executado com sucesso!\n");
+	else terminal_write_string("Deu ruim cr...\n");
+
+	terminal_printf("Teste %%: 100%%\n");
+	terminal_printf("Teste %%c: %c\n", 'A');
+	terminal_printf("Teste %%s: %s\n", "CavalOS");
+	terminal_printf("Inteiro: %d\n", 1529);
+	terminal_printf("Zero: %d\n", 0);
+
+	terminal_write_string("\nTESTES DA LIBK\n");
 
 	terminal_write_string("memset: ");
 	for (int i = 0; i < 5; i++){
