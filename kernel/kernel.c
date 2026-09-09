@@ -116,6 +116,19 @@ void terminal_write_string(const char* data){
 	terminal_write(data, strlen(data));
 }
 
+/*constructor_t = nome q criamos para representar um ponteiro para uma função sem argumentos e sem retorno*/
+typedef void (*constructor_t)(void);
+
+/*extern = diz pro compilador q isso existe mas n foi definido neste arquivo (no nosso caso, foi definido no linker)*/
+extern constructor_t __init_array_start[];
+extern constructor_t __init_array_end[];
+
+/*percorre a região dos constructors e chama cada função q encontrar lá*/
+static void call_global_constructors(void){
+	size_t count = __init_array_end - __init_array_start;
+	for (size_t i = 0; i < count; i++) __init_array_start[i]();
+}
+
 void kernel_main(){
 	const char* CAVALOS =
 	"   _____                 _  ____   _____  \n"
@@ -127,6 +140,8 @@ void kernel_main(){
 	
 	const char* DEVS = "\nDesenvolvido por Bruna Luiza, Daniel Pita,\n"
 	"Felipe Dutra, Gabriella Pompeu e Raynner Meza.\n";
+
+	call_global_constructors();
 
 	terminal_initialize();
 	
