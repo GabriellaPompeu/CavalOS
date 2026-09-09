@@ -141,7 +141,47 @@ void kernel_main(){
 
 	terminal_write_string("==================================================\n");
 
+	terminal_write_string("\n\nTESTES DA LIBK:\n");
+
+	terminal_write_string("memset: ");
 	for (int i = 0; i < 5; i++){
 		terminal_putchar(buffer[i]);
+	}
+
+	terminal_write_string("\nstrlen: ");
+
+	size_t tamanho = strlen("CavalOS");
+
+	if (tamanho == 7){
+		terminal_write_string("OK");
+	} else {
+		terminal_write_string("ERRO");
+	}
+
+	terminal_write_string("\nstrcmp: ");
+
+	if (strcmp("CavalOS", "CavalOS") == 0){
+		terminal_write_string("OK");
+	} else {
+		terminal_write_string("ERRO");
+	}
+
+	terminal_write_string("\nstrncmp: ");
+
+	if (strncmp("CavalOS", "Caval", 5) == 0){
+		terminal_write_string("OK");
+	} else {
+		terminal_write_string("ERRO");
+	}
+
+	terminal_write_string("\nstrcpy: ");
+
+	char destino[20];
+	strcpy(destino, "CavalOS");
+
+	if (strcmp(destino, "CavalOS") == 0){
+		terminal_write_string("OK");
+	} else {
+		terminal_write_string("ERRO");
 	}
 }
