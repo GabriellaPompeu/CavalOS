@@ -23,10 +23,9 @@ SECTIONS
         *(.bss)
     }
 
-    .init_array ALIGN(CONSTANT (MAXPAGESIZE)) : {
-        PROVIDE_HIDDEN (__init_array_start = .);
-        KEEP (*(SORT(.init_array.*)))
-        KEEP (*(.init_array))
-        PROVIDE_HIDDEN (__init_array_end = .);
+    .ctors ALIGN(4) : {
+        __ctors_start = .;
+        KEEP(*(.ctors))
+        __ctors_end = .;
     }
 }

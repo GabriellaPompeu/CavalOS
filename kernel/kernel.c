@@ -120,13 +120,20 @@ void terminal_write_string(const char* data){
 typedef void (*constructor_t)(void);
 
 /*extern = diz pro compilador q isso existe mas n foi definido neste arquivo (no nosso caso, foi definido no linker)*/
-extern constructor_t __init_array_start[];
-extern constructor_t __init_array_end[];
+extern constructor_t __ctors_start[];
+extern constructor_t __ctors_end[];
 
 /*percorre a região dos constructors e chama cada função q encontrar lá*/
 static void call_global_constructors(void){
-	size_t count = __init_array_end - __init_array_start;
-	for (size_t i = 0; i < count; i++) __init_array_start[i]();
+	size_t count = __ctors_end - __ctors_start;
+	for (size_t i = 0; i < count; i++) __ctors_start[i]();
+}
+
+static int constructor_test = 0;
+
+__attribute__((constructor))
+static void teste_constructor(void){
+	constructor_test = 42;
 }
 
 void kernel_main(){
@@ -144,18 +151,21 @@ void kernel_main(){
 	call_global_constructors();
 
 	terminal_initialize();
+
+	if (constructor_test == 42) terminal_write_string("Construtor executado com sucesso!\n");
+	else terminal_write_string("Deu ruim cr...\n");
 	
-	uint8_t buffer[5];
-	memset(buffer, 'A', 5);
-
 	terminal_write_string("==================================================\n");
-
+	
 	terminal_write_string("          Bem-vindo ao CavalOS!\n");
 	terminal_write_string(CAVALOS);
 	terminal_write_string(DEVS);
-
+	
 	terminal_write_string("==================================================\n");
 
+	uint8_t buffer[5];
+	memset(buffer, 'A', 5);
+	
 	terminal_write_string("\n\nTESTES DA LIBK:\n");
 
 	terminal_write_string("memset: ");
