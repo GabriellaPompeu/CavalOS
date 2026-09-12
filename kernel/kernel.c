@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
+#include "../gdt.h"
+#include "../interrupts.h"
 
 #if defined(__linux__)
 #error "Embora pareça, isso aqui n é Linux n..."
@@ -87,7 +89,7 @@ void terminal_put_entry_at(char character, uint8_t color, size_t x, size_t y){
 	terminal_buffer[i] = vga_entry(character, color);
 }
 
-/*Escreve o caractere na posição atual*/
+/*Escreve o caractere na posicao atual*/
 void terminal_putchar(char character){
 	if (character == '\n'){
 		terminal_column = 0;
@@ -213,6 +215,9 @@ void kernel_main(){
 
 	call_global_constructors();
 
+	gdt_init();
+	idt_init();
+
 	terminal_initialize();
 	
 	terminal_write_string("==================================================\n");
@@ -234,6 +239,7 @@ void kernel_main(){
 	terminal_printf("Teste %%s: %s\n", "CavalOS");
 	terminal_printf("Inteiro: %d\n", 1529);
 	terminal_printf("Zero: %d\n", 0);
+	terminal_printf("%d", -50);
 
 	terminal_write_string("\nTESTES DA LIBK\n");
 
