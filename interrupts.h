@@ -18,6 +18,9 @@ struct idt_ptr{
     uint32_t base;
 }__attribute__((packed));
 
+extern struct idt_entry idt[IDT_ENTRIES];
+extern struct idt_ptr idtp;
+
 void idt_init(void);
 
 void idt_set_gate(uint8_t index, uint32_t handler, uint16_t selector, uint8_t type_attributes);
