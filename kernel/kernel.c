@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include "gdt.h"
 #include "interrupts.h"
+#include "memory/memory.h"
 
 #if defined(__linux__)
 #error "Embora pareça, isso aqui n é Linux n..."
@@ -219,6 +220,12 @@ void kernel_main(){
 	idt_init();
 
 	terminal_initialize();
+
+	uint32_t multiboot_info_addr;
+
+	__asm__ volatile ("mov %%ebx, %0" : "=r"(multiboot_info_addr));
+
+	memory_map_init(multiboot_info_addr);
 	
 	terminal_write_string("==================================================\n");
 	
