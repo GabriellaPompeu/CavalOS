@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
-#include "../gdt.h"
-#include "../interrupts.h"
+#include "gdt.h"
+#include "interrupts.h"
 
 #if defined(__linux__)
 #error "Embora pareça, isso aqui n é Linux n..."
