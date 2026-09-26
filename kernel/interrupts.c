@@ -48,7 +48,7 @@ static const char* exception_messages[32] = {
     "Seguranca", "Vaga"
 };
 
-static void kernel_panic(void){
+void kernel_panic(void){
     terminal_printf("\nKERNEL DEU PANE!\n");
 
     asm volatile("cli");

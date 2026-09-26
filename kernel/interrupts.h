@@ -35,6 +35,8 @@ struct registers{
 
 void exception_handler(struct registers *r);
 
+void kernel_panic(void);
+
 extern struct idt_entry idt[IDT_ENTRIES];
 extern struct idt_ptr idtp;
 
