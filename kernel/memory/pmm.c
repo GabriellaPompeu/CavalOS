@@ -1,71 +1,84 @@
-#include "memory.h"
 #include "pmm.h"
 
-extern void terminal_printf(const char* format, ...);
+#define MAX_MEMORY 128 * 1024 * 1024
 
-typedef struct{
-    uint32_t flags;
+#define MAX_FRAMES (MAX_MEMORY / FRAME_SIZE)
 
-    uint32_t mem_lower; uint32_t mem_upper;
+static uint8_t bitmap[MAX_FRAMES / 8];
 
-    uint32_t boot_device; uint32_t cmdline;
+static uint32_t total_frames;
 
-    uint32_t mods_count; uint32_t mods_addr;
+static void set_frame(uint32_t frame){
 
-    uint32_t syms[4];
+    bitmap[frame / 8] |= (1 << (frame % 8));
 
-    uint32_t mmap_lenght; uint32_t mmap_addr;
-} multiboot_info;
+}
 
-void memory_map_init(uint32_t multiboot_info_addr){
+static void clear_frame(uint32_t frame){
 
-    multiboot_info* info = (multiboot_info*)multiboot_info_addr;
+    bitmap[frame / 8] &= ~(1 << (frame % 8));
 
-    terminal_printf("Memory Map:\n");
+}
 
-    uint32_t current = info->mmap_addr;
+static int test_frame(uint32_t frame){
 
-    uint32_t end = info->mmap_addr + info->mmap_lenght;
+    return bitmap[frame / 8] & (1 << (frame % 8));
 
-    uint32_t max_address = 0;
+}
 
-    /*
-     * Primeira passagem:
-     * descobrir o maior endereço do Memory Map.
-     */
+static void reserve_all_frames(void){
 
-    while(current < end){
+    for(uint32_t i = 0; i < sizeof(bitmap); i++){
 
-        multiboot_memory_map_entry* entry = (multiboot_memory_map_entry*)current;
+        bitmap[i] = 0xFF;
 
-        uint32_t region_end = entry->addr_low + entry->len_low;
-
-        if(region_end > max_address) max_address = region_end;
-
-        current += entry->size + sizeof(entry->size);
     }
 
-    /*
-     * Inicializa o PMM.
-     */
+}
 
-    pmm_init(max_address);
+void pmm_init(uint32_t memory_size){
 
-    /*
-     * Segunda passagem:
-     * liberar as regiões de memória disponíveis.
-     */
+    total_frames = memory_size / FRAME_SIZE;
 
-    current = info->mmap_addr;
+    reserve_all_frames();
 
-    while(current < end){
+}
 
-        multiboot_memory_map_entry* entry = (multiboot_memory_map_entry*)current;
+void pmm_free_region(uint32_t address, uint32_t length){
 
-        terminal_printf("Endereço: %d | Tamanho: %d | Tipo: %d\n", entry->addr_low, entry->len_low, entry->type);
+    uint32_t start_frame = address / FRAME_SIZE;
+    uint32_t frame_count = length / FRAME_SIZE;
 
-        if(entry->type == MULTIBOOT_MEMORY_AVAILABLE) pmm_free_region(entry->addr_low, entry->len_low);
+    for(uint32_t i = 0; i < frame_count; i++){
 
-        current += entry->size + sizeof(entry->size);
+        clear_frame(start_frame + i);
+
     }
+
+}
+
+uint32_t alloc_frame(void){
+
+    for(uint32_t frame = 0; frame < total_frames; frame++){
+
+        if(!test_frame(frame)){
+
+            set_frame(frame);
+
+            return frame * FRAME_SIZE;
+
+        }
+
+    }
+
+    return 0;
+
+}
+
+void free_frame(uint32_t address){
+
+    uint32_t frame = address / FRAME_SIZE;
+
+    clear_frame(frame);
+
 }
