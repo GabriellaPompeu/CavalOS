@@ -5,6 +5,9 @@ OUTPUT_ARCH(i386:i386)
 SECTIONS
 {
     . = 2M;
+
+    kernel_start = .;
+
     .text BLOCK(4K) : ALIGN(4K){
         *(.multiboot)
         *(.text)
@@ -28,4 +31,6 @@ SECTIONS
         KEEP(*(.ctors))
         __ctors_end = .;
     }
+
+    kernel_end = .;
 }
