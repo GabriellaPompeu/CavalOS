@@ -1,20 +1,16 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef PMM_H
+#define PMM_H
 
 #include <stdint.h>
 
-#define MULTIBOOT_MEMORY_AVAILABLE 1
+#define FRAME_SIZE 4096
 
-typedef struct{
-    uint32_t size;
+void pmm_init(uint32_t memory_size);
 
-    uint32_t addr_low; uint32_t addr_high;
+void pmm_free_region(uint32_t address, uint32_t length);
 
-    uint32_t len_low; uint32_t len_high;
+uint32_t alloc_frame(void);
 
-    uint32_t type;
-} multiboot_memory_map_entry;
-
-void memory_map_init(uint32_t multiboot_info_addr);
+void free_frame(uint32_t address);
 
 #endif
