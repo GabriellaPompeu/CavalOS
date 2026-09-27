@@ -22,4 +22,8 @@ typedef struct{
 
 void paging_init(void);
 
+void map_page(uint32_t virtual_address, uint32_t physical_address);
+
+page_table* create_page_table(void);
+
 #endif
