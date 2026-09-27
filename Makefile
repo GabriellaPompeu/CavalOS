@@ -3,7 +3,7 @@ AS = i686-elf-as
 LD = i686-elf-ld
 AR = i686-elf-ar
 
-GCCPARAMS = -m32 -ffreestanding -fno-stack-protector -nostdlib -nostartfiles -nodefaultlibs -Wall -Wextra --sysroot=$(SYSROOT) -I$(SYSROOT)/usr/include
+GCCPARAMS = -m32 -ffreestanding -fstack-protector -nostdlib -nostartfiles -nodefaultlibs -Wall -Wextra --sysroot=$(SYSROOT) -I$(SYSROOT)/usr/include
 ASPARAMS = --32
 LDPARAMS = -melf_i386
 
