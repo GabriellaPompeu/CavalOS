@@ -26,4 +26,10 @@ void map_page(uint32_t virtual_address, uint32_t physical_address);
 
 page_table* create_page_table(void);
 
+void add_page_table(uint32_t directory_index, page_table* table);
+
+page_entry* get_page(uint32_t virtual_address);
+
+void unmap_page(uint32_t virtual_address);
+
 #endif
