@@ -2,6 +2,7 @@
 #define PAGING_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #define PAGE_SIZE 4096
 
 typedef struct{
@@ -31,5 +32,9 @@ void add_page_table(uint32_t directory_index, page_table* table);
 page_entry* get_page(uint32_t virtual_address);
 
 void unmap_page(uint32_t virtual_address);
+
+bool is_page_mapped(uint32_t virtual_address);
+
+uint32_t translate_address(uint32_t virtual_address);
 
 #endif
