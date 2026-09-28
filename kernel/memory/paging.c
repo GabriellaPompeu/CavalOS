@@ -118,3 +118,21 @@ page_entry* get_page(uint32_t virtual_address){
     page_table* table = (page_table*)(kernel_directory -> entries[directory_index].frame << 12);
     return &table -> entries[table_index];
 }
+
+bool is_page_mapped(uint32_t virtual_address){
+    page_entry* page = get_page(virtual_address);
+
+    if(page == NULL) return false;
+    return page -> present == 1;
+}
+
+uint32_t translate_address(uint32_t virtual_address){
+    page_entry* page = get_page(virtual_address);
+
+    if(page == NULL) return 0xFFFFFFFF;
+    if(page -> present == 0) return 0xFFFFFFFF;
+
+    uint32_t offset = virtual_address & 0xFFF;
+    uint32_t physical_address = (page -> frame << 12) | offset;
+    return physical_address;
+}
