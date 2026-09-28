@@ -49,15 +49,38 @@ void pagina_init(void){
 }
 
 void map_page(uint32_t virtual_address, uint32_t physical_address){
-    uint32_t page_index = virtual_address >> 12;
+    uint32_t directory_index = virtual_address >> 22;
+    uint32_t table_index = (virtual_address >> 12) & 0x3FF;
 
-    if(page_index >= 1024) return;
+    if(directory_index >= 1024) return;
 
-    page_table* first_table = (page_table*)(kernel_directory -> entries[0].frame << 12);
+    if(kernel_directory->entries[directory_index].present == 0){
+        page_table* table = create_page_table();
+        if(table == NULL) return;
+        uint32_t table_address = (uint32_t)table;
 
-    first_table -> entries[page_index].present = 1;
-    first_table -> entries[page_index].read_writer = 1;
-    first_table -> entries[page_index].frame = physical_address >> 12;
+        kernel_directory->entries[directory_index].present = 1;
+        kernel_directory->entries[directory_index].read_writer = 1;
+        kernel_directory->entries[directory_index].frame =table_address >> 12;
+    }
+
+    page_table* table = (page_table*)(kernel_directory->entries[directory_index].frame << 12);
+
+    table->entries[table_index].present = 1;
+    table->entries[table_index].read_writer = 1;
+    table->entries[table_index].frame = physical_address >> 12;
+}
+
+void unmap_page(uint32_t virtual_address){
+    page_entry* page = get_page(virtual_address);
+
+    if(page == NULL) return;
+
+    page -> present = 0;
+    page -> read_writer = 0;
+    page -> user = 0;
+    page -> unused = 0;
+    page -> frame = 0;
 }
 
 page_table* create_page_table(void){
@@ -75,4 +98,23 @@ page_table* create_page_table(void){
         table -> entries[i].frame = 0;
     }
     return table;
+}
+
+void add_page_table(uint32_t directory_index, page_table* table){
+    uint32_t table_address = (uint32_t)table;
+
+    kernel_directory -> entries[directory_index].present = 1;
+    kernel_directory -> entries[directory_index].read_writer = 1;
+    kernel_directory -> entries[directory_index].frame = table_address >> 12;
+}
+
+page_entry* get_page(uint32_t virtual_address){
+    uint32_t directory_index = virtual_address >> 22;
+    uint32_t table_index = (virtual_address >> 12) & 0x3FF;
+
+    if(directory_index >= 1024) return NULL;
+    if(kernel_directory -> entries[directory_index].present == 0) return NULL;
+
+    page_table* table = (page_table*)(kernel_directory -> entries[directory_index].frame << 12);
+    return &table -> entries[table_index];
 }
