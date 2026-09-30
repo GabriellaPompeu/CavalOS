@@ -37,7 +37,10 @@ stack_top:
 _start:
     mov $stack_top, %esp # coloquei o end de stack_top em esp
     # agr ss o processador tem uma stack válida para usar e podemos chamar kernel_main
+    push %ebx
+    push %eax
     call kernel_main
+    add $8, %esp
     cli
 1:  hlt # para a execução do processador até termos uma condição q o faça continuar
     jmp 1b # caso algo faça o processador retornar, voltamos para hlt

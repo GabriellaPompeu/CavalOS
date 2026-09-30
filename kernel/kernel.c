@@ -202,7 +202,7 @@ static void teste_constructor(void){
 	constructor_test = 42;
 }
 
-void kernel_main(){
+void kernel_main(uint32_t magic, uint32_t info){
 	const char* CAVALOS =
 	"   _____                 _  ____   _____  \n"
 	"  / ____|               | |/ __ \\ / ____| \n"
@@ -221,11 +221,7 @@ void kernel_main(){
 
 	terminal_initialize();
 
-	uint32_t multiboot_info_addr;
-
-	__asm__ volatile ("mov %%ebx, %0" : "=r"(multiboot_info_addr));
-
-	memory_map_init(multiboot_info_addr);
+	memory_map_init(info);
 	
 	terminal_write_string("==================================================\n");
 	
