@@ -38,7 +38,7 @@ void pagina_init(void){
     kernel_directory -> entries[0].frame = table_frame >> 12;
 
     for(uint32_t i = 0; i < 1024; i++){
-        uint32_t frame = alloc_frame;
+        uint32_t frame = alloc_frame();
 
         if(frame == 0xFFFFFFFF) return;
 
