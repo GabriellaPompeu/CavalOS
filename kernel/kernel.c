@@ -150,6 +150,7 @@ void kernel_main(uint32_t magic, uint32_t info){
 	terminal_printf("Inteiro: %d\n", 1529);
 	terminal_printf("Zero: %d\n", 0);
 	terminal_printf("%d", -50);
+	terminal_input_enter();
 
     /* =========================
        TIMER
