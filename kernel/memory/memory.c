@@ -63,7 +63,7 @@ void memory_map_init(uint32_t multiboot_info_addr){
     while(current < end){
         multiboot_memory_map_entry* entry = (multiboot_memory_map_entry*)current;
 
-        terminal_printf("Endereco: %d | Tamanho: %d | Tipo: %d\n", entry->addr_low, entry->len_low, entry->type);
+        /*terminal_printf("Endereco: %d | Tamanho: %d | Tipo: %d\n", entry->addr_low, entry->len_low, entry->type);*/
 
         if(entry->type == MULTIBOOT_MEMORY_AVAILABLE) pmm_free_region(entry->addr_low, entry->len_low);
 
@@ -72,5 +72,5 @@ void memory_map_init(uint32_t multiboot_info_addr){
 
     pmm_reserve_region((uint32_t)&kernel_start, (uint32_t)&kernel_end - (uint32_t)&kernel_start);
     pmm_reserve_region(pmm_get_bitmap_address(), pmm_get_bitmap_size());
-    pmm_test();
+    // pmm_test();
 }

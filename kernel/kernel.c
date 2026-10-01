@@ -51,8 +51,7 @@ static void teste_constructor(void)
    KERNEL
    ========================= */
 
-void kernel_main(uint32_t magic, uint32_t info)
-{
+void kernel_main(uint32_t magic, uint32_t info){
     (void)magic;
 
     const char* CAVALOS =
@@ -78,7 +77,7 @@ void kernel_main(uint32_t magic, uint32_t info)
 
     /* =========================
        INICIALIZAÇÃO
-       ========================= */
+    ========================= */
 
     call_global_constructors();
 
@@ -94,7 +93,7 @@ void kernel_main(uint32_t magic, uint32_t info)
 	}
 
 	/*mostrar regioes de memoria fornecidas pelo GRUB*/
-	multiboot_print_memory_map(mbi);
+	// multiboot_print_memory_map(mbi);
 
     idt_init();
 
