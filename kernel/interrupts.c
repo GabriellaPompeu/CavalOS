@@ -75,8 +75,7 @@ void exception_handler(struct registers *r){
     }
 }
 
-void irq_handler(uint32_t int_no)
-{
+void irq_handler(uint32_t int_no){
     if (int_no == 32)
         timer_handler();
 
