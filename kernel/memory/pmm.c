@@ -66,3 +66,26 @@ void free_frame(uint32_t address){
     if(frame >= total_frames) return;
     clear_frame(frame);
 }
+
+uint32_t pmm_get_total_frames(void)
+{
+    return total_frames;
+}
+
+uint32_t pmm_get_used_frames(void)
+{
+    uint32_t used_frames = 0;
+
+    for (uint32_t frame = 0; frame < total_frames; frame++)
+    {
+        if (test_frame(frame))
+            used_frames++;
+    }
+
+    return used_frames;
+}
+
+uint32_t pmm_get_free_frames(void)
+{
+    return total_frames - pmm_get_used_frames();
+}
