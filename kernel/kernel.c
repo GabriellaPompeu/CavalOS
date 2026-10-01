@@ -3,9 +3,11 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
+
 #include "gdt.h"
 #include "interrupts.h"
 #include "memory/memory.h"
+#include "multiboot/multiboot.h"
 
 #if defined(__linux__)
 #error "Embora pareça, isso aqui n é Linux n..."
@@ -214,12 +216,15 @@ void kernel_main(uint32_t magic, uint32_t info){
 	const char* DEVS = "\nDesenvolvido por Bruna Luiza, Daniel Pita,\n"
 	"Felipe Dutra, Gabriella Pompeu e Raynner Meza.\n";
 
-	if (magic != 0x1BADB002){
+	/*Verifica se o GRUB realmente carregou o kernel usando multiboot 1*/
+	if (!multiboot_validate(magic)){
 		kernel_panic();
 	}
 
+	/*endereco da estrutura multibootinfo*/
 	struct multiboot_info* mbi = (struct multiboot_info*)info;
 
+	/*inicializacao do kernel*/
 	call_global_constructors();
 
 	gdt_init();
@@ -227,6 +232,17 @@ void kernel_main(uint32_t magic, uint32_t info){
 
 	terminal_initialize();
 
+	/*verifica se o GRUB forneceu o memmory map*/
+	if (multiboot_has_memory_map(mbi)){
+		terminal_write_string("Multiboot: mapa de memoria encontrado!\n");
+	} else {
+		terminal_write_string("Multiboot: mapa de memoria nao encontrado!\n");
+	}
+
+	/*mostrar regioes de memoria fornecidas pelo GRUB*/
+	multiboot_print_memory_map(mbi);
+
+	/*inicializacao do gerenciamento de memoria*/
 	memory_map_init(info);
 	
 	terminal_write_string("==================================================\n");
@@ -240,6 +256,7 @@ void kernel_main(uint32_t magic, uint32_t info){
 	if (constructor_test == 42) terminal_write_string("Construtor executado com sucesso!\n");
 	else terminal_write_string("Deu ruim cr...\n");
 
+	/*testes basicos - temporarios*/
 	terminal_printf("Teste %%: 100%%\n");
 	terminal_printf("Teste %%c: %c\n", 'A');
 	terminal_printf("Teste %%s: %s\n", "CavalOS");
