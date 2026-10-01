@@ -33,14 +33,20 @@ void pmm_free_region(uint32_t address, uint32_t length){
     uint32_t start_frame = (address + FRAME_SIZE - 1) / FRAME_SIZE;
     uint32_t end_frame = (address + length) / FRAME_SIZE;
 
-    for(uint32_t frame = start_frame; frame < end_frame; frame++) clear_frame(frame);
+    for(uint32_t frame = start_frame; frame < end_frame; frame++){
+        if(frame >= total_frames) break;
+        clear_frame(frame);
+    }
 }
 
 void pmm_reserve_region(uint32_t address, uint32_t lenght){
     uint32_t start_frame = address / FRAME_SIZE;
     uint32_t end_frame = (address + lenght + FRAME_SIZE - 1) / FRAME_SIZE;
 
-    for(uint32_t frame = start_frame; frame < end_frame; frame++) set_frame(frame);
+    for(uint32_t frame = start_frame; frame < end_frame; frame++){
+        if(frame >= total_frames) break;
+        set_frame(frame);
+    }
 }
 
 uint32_t pmm_get_bitmap_address(void){
