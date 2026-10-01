@@ -60,6 +60,10 @@ static char scancode_to_ascii(uint8_t scancode){
         case 0x32: return 'm';
 
         case 0x39: return ' ';
+        case 0x0C: return '-';
+        case 0x0D: return '=';
+        case 0x33: return ',';
+        case 0x34: return '.';
 
         default:
             return 0;
