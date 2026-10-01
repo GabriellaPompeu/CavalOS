@@ -214,6 +214,12 @@ void kernel_main(uint32_t magic, uint32_t info){
 	const char* DEVS = "\nDesenvolvido por Bruna Luiza, Daniel Pita,\n"
 	"Felipe Dutra, Gabriella Pompeu e Raynner Meza.\n";
 
+	if (magic != 0x1BADB002){
+		kernel_panic();
+	}
+
+	struct multiboot_info* mbi = (struct multiboot_info*)info;
+
 	call_global_constructors();
 
 	gdt_init();
@@ -231,9 +237,6 @@ void kernel_main(uint32_t magic, uint32_t info){
 	
 	terminal_write_string("==================================================\n");
 
-	uint8_t buffer[5];
-	memset(buffer, 'A', 5);
-
 	if (constructor_test == 42) terminal_write_string("Construtor executado com sucesso!\n");
 	else terminal_write_string("Deu ruim cr...\n");
 
@@ -244,47 +247,4 @@ void kernel_main(uint32_t magic, uint32_t info){
 	terminal_printf("Zero: %d\n", 0);
 	terminal_printf("%d", -50);
 
-	terminal_write_string("\nTESTES DA LIBK\n");
-
-	terminal_write_string("memset: ");
-	for (int i = 0; i < 5; i++){
-		terminal_putchar(buffer[i]);
-	}
-
-	terminal_write_string("\nstrlen: ");
-
-	size_t tamanho = strlen("CavalOS");
-
-	if (tamanho == 7){
-		terminal_write_string("OK");
-	} else {
-		terminal_write_string("ERRO");
-	}
-
-	terminal_write_string("\nstrcmp: ");
-
-	if (strcmp("CavalOS", "CavalOS") == 0){
-		terminal_write_string("OK");
-	} else {
-		terminal_write_string("ERRO");
-	}
-
-	terminal_write_string("\nstrncmp: ");
-
-	if (strncmp("CavalOS", "Caval", 5) == 0){
-		terminal_write_string("OK");
-	} else {
-		terminal_write_string("ERRO");
-	}
-
-	terminal_write_string("\nstrcpy: ");
-
-	char destino[20];
-	strcpy(destino, "CavalOS");
-
-	if (strcmp(destino, "CavalOS") == 0){
-		terminal_write_string("OK");
-	} else {
-		terminal_write_string("ERRO");
-	}
 }
