@@ -29,8 +29,7 @@ typedef void (*constructor_t)(void);
 extern constructor_t __ctors_start[];
 extern constructor_t __ctors_end[];
 
-static void call_global_constructors(void)
-{
+static void call_global_constructors(void){
     size_t count = __ctors_end - __ctors_start;
 
     for (size_t i = 0; i < count; i++)
@@ -41,8 +40,7 @@ static void call_global_constructors(void)
 static int constructor_test = 0;
 
 __attribute__((constructor))
-static void teste_constructor(void)
-{
+static void teste_constructor(void){
     constructor_test = 42;
 }
 
@@ -108,21 +106,15 @@ void kernel_main(uint32_t magic, uint32_t info){
        MENSAGEM INICIAL
        ========================= */
 
-    terminal_write_string(
-        "==================================================\n"
-    );
+    terminal_write_string("==================================================\n");
 
-    terminal_write_string(
-        "          Bem-vindo ao CavalOS!\n"
-    );
+    terminal_write_string("          Bem-vindo ao CavalOS!\n");
 
     terminal_write_string(CAVALOS);
 
     terminal_write_string(DEVS);
 
-    terminal_write_string(
-        "==================================================\n"
-    );
+    terminal_write_string("==================================================\n");
 
 
     /* =========================
@@ -130,34 +122,17 @@ void kernel_main(uint32_t magic, uint32_t info){
        ========================= */
 
     if (constructor_test == 42)
-        terminal_write_string(
-            "Construtor executado com sucesso!\n"
-        );
+        terminal_write_string("Construtor executado com sucesso!\n");
     else
-        terminal_write_string(
-            "Deu ruim cr...\n"
-        );
+        terminal_write_string("Deu ruim cr...\n");
 
-
-    /* =========================
-       TESTES DO TERMINAL
-       ========================= */
-
-    /*testes basicos - temporarios*/
-	terminal_printf("Teste %%: 100%%\n");
-	terminal_printf("Teste %%c: %c\n", 'A');
-	terminal_printf("Teste %%s: %s\n", "CavalOS");
-	terminal_printf("Inteiro: %d\n", 1529);
-	terminal_printf("Zero: %d\n", 0);
-	terminal_printf("%d", -50);
-	terminal_input_enter();
-
+    terminal_input_enter();
+    
     /* =========================
        TIMER
        ========================= */
 
     timer_init(100);
-
 
     /* =========================
        IRQs
@@ -168,13 +143,11 @@ void kernel_main(uint32_t magic, uint32_t info){
 
     asm volatile ("sti");
 
-
     /* =========================
        LOOP PRINCIPAL
        ========================= */
 
-    while (1)
-    {
+    while (1){
         asm volatile ("hlt");
     }
 }
