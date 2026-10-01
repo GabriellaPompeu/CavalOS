@@ -1,0 +1,36 @@
+ENTRY(_start)
+OUTPUT_FORMAT(elf32-i386)
+OUTPUT_ARCH(i386:i386)
+
+SECTIONS
+{
+    . = 2M;
+
+    kernel_start = .;
+
+    .text BLOCK(4K) : ALIGN(4K){
+        *(.multiboot)
+        *(.text)
+    }
+
+    .rodata BLOCK(4K) : ALIGN(4K){
+        *(.rodata)
+    }
+
+    .data BLOCK(4K) : ALIGN(4K){
+        *(.data)
+    }
+
+    .bss BLOCK(4K) : ALIGN(4K){
+        *(COMMON)
+        *(.bss)
+    }
+
+    .ctors ALIGN(4) : {
+        __ctors_start = .;
+        KEEP(*(.ctors))
+        __ctors_end = .;
+    }
+
+    kernel_end = .;
+}
