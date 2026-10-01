@@ -17,8 +17,7 @@
 #define PIC1_OFFSET  0x20
 #define PIC2_OFFSET  0x28
 
-void outb(uint16_t port, uint8_t value)
-{
+void outb(uint16_t port, uint8_t value){
     __asm__ volatile (
         "outb %0, %1"
         :
@@ -26,8 +25,7 @@ void outb(uint16_t port, uint8_t value)
     );
 }
 
-uint8_t inb(uint16_t port)
-{
+uint8_t inb(uint16_t port){
     uint8_t value;
 
     __asm__ volatile (
@@ -39,8 +37,7 @@ uint8_t inb(uint16_t port)
     return value;
 }
 
-void irq_init(void)
-{
+void irq_init(void){
     /** Começa a inicialização do PIC 1 e PIC 2.*/
     outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);
     outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
@@ -78,18 +75,14 @@ void irq_init(void)
     outb(PIC2_DATA, 0xFF);
 }
 
-void irq_enable(uint8_t irq)
-{
-    if (irq < 8)
-    {
+void irq_enable(uint8_t irq){
+    if (irq < 8){
         uint8_t mask = inb(0x21);
 
         mask &= ~(1 << irq);
 
         outb(0x21, mask);
-    }
-    else if (irq < 16)
-    {
+    }else if (irq < 16){
         uint8_t mask = inb(0xA1);
 
         mask &= ~(1 << (irq - 8));
@@ -98,15 +91,12 @@ void irq_enable(uint8_t irq)
     }
 }
 
-void reboot(void)
-{
-    while (inb(0x64) & 0x02)
-    {
+void reboot(void){
+    while (inb(0x64) & 0x02){
     }
 
     outb(0x64, 0xFE);
 
-    for (;;)
-    {
+    for (;;){
     }
 }
