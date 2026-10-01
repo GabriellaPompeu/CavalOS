@@ -19,4 +19,8 @@ uint32_t alloc_frame(void);
 
 void free_frame(uint32_t address);
 
+uint32_t pmm_get_total_frames(void);
+uint32_t pmm_get_used_frames(void);
+uint32_t pmm_get_free_frames(void);
+
 #endif
