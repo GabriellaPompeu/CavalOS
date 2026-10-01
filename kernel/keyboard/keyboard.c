@@ -5,8 +5,7 @@
 
 #define KEYBOARD_DATA_PORT 0x60
 
-static uint8_t keyboard_read_scancode(void)
-{
+static uint8_t keyboard_read_scancode(void){
     uint8_t scancode;
 
     __asm__ volatile (
@@ -18,10 +17,8 @@ static uint8_t keyboard_read_scancode(void)
     return scancode;
 }
 
-static char scancode_to_ascii(uint8_t scancode)
-{
-    switch (scancode)
-    {
+static char scancode_to_ascii(uint8_t scancode){
+    switch (scancode){
         case 0x02: return '1';
         case 0x03: return '2';
         case 0x04: return '3';
@@ -69,33 +66,25 @@ static char scancode_to_ascii(uint8_t scancode)
     }
 }
 
-void keyboard_init(void)
-{
+void keyboard_init(void){
 }
 
-void keyboard_handler(void)
-{
-    uint8_t scancode =
-        keyboard_read_scancode();
+void keyboard_handler(void){
+    uint8_t scancode = keyboard_read_scancode();
 
-    if (scancode & 0x80)
-        return;
+    if (scancode & 0x80) return;
 
-    if (scancode == 0x0E)
-    {
+    if (scancode == 0x0E){
         terminal_input_backspace();
         return;
     }
 
-    if (scancode == 0x1C)
-    {
+    if (scancode == 0x1C){
         terminal_input_enter();
         return;
     }
 
-    char character =
-        scancode_to_ascii(scancode);
+    char character = scancode_to_ascii(scancode);
 
-    if (character != 0)
-        terminal_input_char(character);
+    if (character != 0) terminal_input_char(character);
 }
