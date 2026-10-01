@@ -26,6 +26,19 @@ void outb(uint16_t port, uint8_t value)
     );
 }
 
+uint8_t inb(uint16_t port)
+{
+    uint8_t value;
+
+    __asm__ volatile (
+        "inb %1, %0"
+        : "=a"(value)
+        : "Nd"(port)
+    );
+
+    return value;
+}
+
 void irq_init(void)
 {
     /** Começa a inicialização do PIC 1 e PIC 2.*/
@@ -69,13 +82,7 @@ void irq_enable(uint8_t irq)
 {
     if (irq < 8)
     {
-        uint8_t mask;
-
-        __asm__ volatile (
-            "inb %1, %0"
-            : "=a"(mask)
-            : "Nd"((uint16_t)0x21)
-        );
+        uint8_t mask = inb(0x21);
 
         mask &= ~(1 << irq);
 
@@ -83,16 +90,23 @@ void irq_enable(uint8_t irq)
     }
     else if (irq < 16)
     {
-        uint8_t mask;
-
-        __asm__ volatile (
-            "inb %1, %0"
-            : "=a"(mask)
-            : "Nd"((uint16_t)0xA1)
-        );
+        uint8_t mask = inb(0xA1);
 
         mask &= ~(1 << (irq - 8));
 
         outb(0xA1, mask);
+    }
+}
+
+void reboot(void)
+{
+    while (inb(0x64) & 0x02)
+    {
+    }
+
+    outb(0x64, 0xFE);
+
+    for (;;)
+    {
     }
 }
