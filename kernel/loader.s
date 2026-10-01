@@ -9,27 +9,20 @@
 
 /*Obs.: Vou usar Assembly x86 com sintaxe AT&T*/
 
-/* Ponto de entrada de um kernel x86 de 32 bits
-Multiboot 1
-EAX = magic fornecido pelo GRUB
-EBX = endereço da estrutura multiboot_info
-*/
-
-/* Flags exigidas pelo Multiboot */
 .set ALIGN, 1<<0 /*ALIGN = 1*/
 .set MEMINFO, 1<<1 /*MEMINFO = 00000010 = 2 */
 .set FLAGS, ALIGN | MEMINFO /*00000011 = 3 */
 .set MAGIC, 0x1BADB002 /*padrão multiboot, ele ajuda o bootloader a encontrar o header*/
 .set CHECKSUM, -(MAGIC + FLAGS) /*o multiboot exige MAGIC + FLAGS + CHECKSUM = 0, logo temos isso */
 
-# Header do multiboot - o GRUB procura essa assinatura dentro do kernel
+# infos para o bootloader
 .section .multiboot
 .align 4
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
 
-# tudo sobre a memória reservada - STACK DO KERNEL
+# tudo sobre a memória reservada 
 .section .bss
 .align 16
 stack_bottom:
@@ -37,7 +30,7 @@ stack_bottom:
 stack_top:
 # endereços menores ficam mais perto do stack_bottom e os maiores ficam mais perto do stack_top
 
-# intruções da CPU - ponto de entrada
+# intruções da CPU
 .section .text
 .global _start # deixei visível para o linker
 .type _start, @function 

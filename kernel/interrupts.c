@@ -2,6 +2,9 @@
 #include <stddef.h>
 #include <stdint.h> 
 #include "interrupts.h"
+#include "irq.h"
+#include "timer/timer.h"
+#include "keyboard/keyboard.h"
 
 extern void terminal_printf(const char* format, ...);
 
@@ -27,6 +30,11 @@ void idt_init(void){ //inicializa a idt zerando todos os atributos e define o en
 
     idtp.limit = sizeof(idt) - 1;
     idtp.base = (uint32_t)&idt;
+
+    idt_set_gate(32, (uint32_t)irq0, 0x10, 0x8E);
+    idt_set_gate(33, (uint32_t)irq1, 0x10, 0x8E);
+
+    asm volatile ("lidt %0" : : "m"(idtp));
 }
 
 static const char* exception_messages[32] = {
@@ -65,4 +73,20 @@ void exception_handler(struct registers *r){
         handle_simple_exception(r);
         // ainda vou criar a biblioteca stdio, então vamos poder por exemplo usar o printf para printas as mensagens
     }
+}
+
+void irq_handler(uint32_t int_no)
+{
+    if (int_no == 32)
+        timer_handler();
+
+    if(int_no == 33) keyboard_handler();
+
+    //if (int_no >= 32 && int_no <= 47)
+      //  terminal_printf("IRQ recebida: %d\n", int_no);
+
+    if (int_no >= 40)
+        outb(0xA0, 0x20);
+
+    outb(0x20, 0x20);
 }
