@@ -32,31 +32,86 @@ O objetivo principal não é criar um sistema operacional de uso geral, mas comp
 
 ```text
 CavalOS/
-├── kernel/
-│   ├── memory/
-│   │   ├── pmm.c
-│   │   └── memory.c
-│   │
-│   ├── gdt.c
-│   ├── interrupts.c
-│   ├── stack_protector.c
-│   ├── kernel.c
-│   └── loader.s
-│
-├── libk/
-│   └── ...
-│
-├── sysroot/
-│   └── usr/
-│
-├── isodir/
-│   └── boot/
-│       └── grub/
-│           └── grub.cfg
-│
+├── cavaloImg.txt
+├── grub.cfg
+├── isodir
+│   └── boot
+│       ├── grub
+│       │   └── grub.cfg
+│       └── mykernel.bin
+├── kernel
+│   ├── filesystem
+│   │   ├── filesystem.c
+│   │   └── filesystem.h
+│   ├── gdt.c
+│   ├── gdt.h
+│   ├── gdt.o
+│   ├── grub.cfg
+│   ├── interrupts.c
+│   ├── interrupts.h
+│   ├── interrupts.o
+│   ├── irq.c
+│   ├── irq.h
+│   ├── irq.o
+│   ├── irq.s
+│   ├── irq_stubs.o
+│   ├── irq_stubs.s
+│   ├── kernel.c
+│   ├── kernel.o
+│   ├── keyboard
+│   │   ├── keyboard.c
+│   │   ├── keyboard.h
+│   │   └── keyboard.o
+│   ├── linker.ld
+│   ├── loader.o
+│   ├── loader.s
+│   ├── Makefile
+│   ├── memory
+│   │   ├── heap.c
+│   │   ├── heap.h
+│   │   ├── heap.o
+│   │   ├── memory.c
+│   │   ├── memory.h
+│   │   ├── memory.o
+│   │   ├── paging_asm.o
+│   │   ├── paging.c
+│   │   ├── paging.h
+│   │   ├── paging.o
+│   │   ├── pmm.c
+│   │   ├── pmm.h
+│   │   └── pmm.o
+│   ├── multiboot
+│   │   ├── multiboot.c
+│   │   ├── multiboot.h
+│   │   └── multiboot.o
+│   ├── qemu.log
+│   ├── README.md
+│   ├── stack_protector.c
+│   ├── stack_protector.o
+│   ├── terminal
+│   │   ├── terminal.c
+│   │   ├── terminal.h
+│   │   └── terminal.o
+│   └── timer
+│       ├── timer.c
+│       ├── timer.h
+│       └── timer.o
+├── libk
+│   ├── libk.a
+│   ├── string.c
+│   └── string.o
 ├── linker.ld
 ├── Makefile
-└── README.md
+├── mykernel.bin
+├── myos.iso
+├── README.md
+├── sysroot
+│   └── usr
+│       ├── include
+│       │   └── string.h
+│       └── lib
+│           └── libk.a
+└── timer.c
 ```
 
 A estrutura pode mudar conforme novos subsistemas forem adicionados ao kernel.
