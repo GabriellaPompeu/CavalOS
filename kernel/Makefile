@@ -7,7 +7,7 @@ GCCPARAMS = -m32 -ffreestanding -fstack-protector -nostdlib -nostartfiles -nodef
 ASPARAMS = --32
 LDPARAMS = -melf_i386
 
-KERNEL_OBJECTS = kernel/loader.o kernel/kernel.o kernel/multiboot/multiboot.o kernel/gdt.o kernel/interrupts.o kernel/memory/pmm.o kernel/irq.o kernel/irq_stubs.o kernel/timer/timer.o kernel/keyboard/keyboard.o kernel/terminal/terminal.o kernel/memory/memory.o kernel/stack_protector.o kernel/memory/paging.o kernel/memory/heap.o
+KERNEL_OBJECTS = kernel/loader.o kernel/kernel.o kernel/multiboot/multiboot.o kernel/gdt.o kernel/interrupts.o kernel/memory/pmm.o kernel/irq.o kernel/irq_stubs.o kernel/timer/timer.o kernel/keyboard/keyboard.o kernel/terminal/terminal.o kernel/memory/memory.o kernel/stack_protector.o kernel/memory/paging.o kernel/memory/heap.o kernel/filesystem/filesystem.o
 LIBK = libk/libk.a
 LIBK_PATH = $(SYSROOT)/usr/lib
 LIBK_OBJECTS = libk/string.o

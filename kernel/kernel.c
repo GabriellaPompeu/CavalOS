@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+
 #include "multiboot/multiboot.h"
 #include "gdt.h"
 #include "interrupts.h"
@@ -10,6 +11,7 @@
 #include "timer/timer.h"
 #include "keyboard/keyboard.h"
 #include "terminal/terminal.h"
+#include "filesystem/filesystem.h"
 
 #if defined(__linux__)
 #error "Embora pareça, isso aqui n é Linux n..."
@@ -127,7 +129,7 @@ void kernel_main(uint32_t magic, uint32_t info){
         terminal_write_string("Deu ruim cr...\n");
 
     terminal_input_enter();
-    
+
     /* =========================
        TIMER
        ========================= */
