@@ -5,6 +5,11 @@
 #include <stdarg.h>
 #include <string.h>
 
+extern uint32_t pmm_get_total_frames(void);
+extern uint32_t pmm_get_used_frames(void);
+extern uint32_t pmm_get_free_frames(void);
+extern void reboot(void);
+
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
@@ -293,6 +298,7 @@ static void terminal_execute_command(void)
         terminal_write_string("clear - limpa a tela\n");
         terminal_write_string("ticks - mostra os ticks do timer\n");
         terminal_write_string("uptime - mostra quanto tempo o sistema esta ligado\n");
+        terminal_write_string("mem - mostra status da memoria\n");
     }
     else if (strcmp(input_buffer, "clear") == 0)
     {
@@ -308,6 +314,13 @@ static void terminal_execute_command(void)
     uint32_t segundos = ticks / 100;
 
     terminal_printf("Sistema ligado ha %d segundos.\n", segundos);
+}else if (strcmp(input_buffer, "mem") == 0){
+
+    terminal_printf("Total de frames: %d\n", pmm_get_total_frames());
+    terminal_printf("Frames ocupados: %d\n", pmm_get_used_frames());
+    terminal_printf("Frames vagos: %d\n", pmm_get_free_frames());
+}else if(strcmp(input_buffer, "reboot") == 0){
+    reboot();
 }
     else
     {
