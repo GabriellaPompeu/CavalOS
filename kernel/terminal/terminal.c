@@ -234,7 +234,7 @@ static void terminal_execute_command(void){
         terminal_write_string("ticks - mostra os ticks do timer\n");
         terminal_write_string("uptime - mostra quanto tempo o sistema esta ligado\n");
         terminal_write_string("mem - mostra status da memoria\n");
-        terminal_write_string("reboot - reinicia o sistema");
+        terminal_write_string("reboot - reinicia o sistema\n");
 
     }else if (strcmp(input_buffer, "clear") == 0){
         terminal_clear();
