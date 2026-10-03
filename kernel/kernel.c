@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-
+#include "process/process.h"
 #include "multiboot/multiboot.h"
 #include "gdt.h"
 #include "interrupts.h"
@@ -12,6 +12,7 @@
 #include "keyboard/keyboard.h"
 #include "terminal/terminal.h"
 #include "filesystem/filesystem.h"
+#include "syscalls/syscall.h"
 
 #if defined(__linux__)
 #error "Embora pareça, isso aqui n é Linux n..."
@@ -118,7 +119,10 @@ void kernel_main(uint32_t magic, uint32_t info){
 
     terminal_write_string("==================================================\n");
 
-	process_init();
+    process_init();
+
+    syscall_init();
+    syscall(SYS_WRITE, (uint32_t)"Testando syscall CavalOS!\n", 0, 0);
 
     /* =========================
        TESTE DOS CONSTRUTORES
