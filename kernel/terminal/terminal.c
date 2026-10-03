@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include "../filesystem/filesystem.h"
+#include "../process/process.h"
 
 extern uint32_t pmm_get_total_frames(void);
 extern uint32_t pmm_get_used_frames(void);
@@ -16,6 +17,10 @@ extern void reboot(void);
 #define VGA_MEMORY 0xB8000
 
 #define INPUT_BUFFER_SIZE 128
+
+#define HISTORY_MAX 16
+static char command_history[HISTORY_MAX][INPUT_BUFFER_SIZE];
+static size_t history_count = 0;
 
 static size_t terminal_row;
 static size_t terminal_column;
@@ -226,6 +231,21 @@ static void terminal_clear(void){
     }
 }
 
+static void terminal_history_add(const char* command){
+
+    if(command == NULL || command[0] == '\0') return;
+
+    if(history_count < HISTORY_MAX){
+        strcpy(command_history[history_count], command);
+        history_count++;
+    }else{
+
+        for(size_t i = 1; i < HISTORY_MAX; i++) strcpy(command_history[i - 1], command_history[i]);
+
+        strcpy(command_history[HISTORY_MAX - 1], command);
+    }
+}
+
 static char* terminal_get_argument(void){
     for(size_t i = 0; i < input_length; i++){
         if(input_buffer[i] == ' ') return &input_buffer[i + 1];
@@ -246,6 +266,8 @@ static bool terminal_command_is(const char* command){
 static void terminal_execute_command(void){
     if (input_length == 0) return;
 
+    terminal_history_add(input_buffer);
+
     if (strcmp(input_buffer, "help") == 0){
         terminal_write_string("\nComandos disponiveis:\n");
         terminal_write_string("help - mostra esta mensagem\n");
@@ -254,11 +276,13 @@ static void terminal_execute_command(void){
         terminal_write_string("uptime - mostra quanto tempo o sistema esta ligado\n");
         terminal_write_string("mem - mostra status da memoria\n");
         terminal_write_string("reboot - reinicia o sistema\n");
+        terminal_write_string("history - mostra o historico\n");
+        terminal_write_string("ps - lista os processos\n");
         terminal_write_string("ls - lista os arquivos\n");
         terminal_write_string("touch - cria arquivo\n");
         terminal_write_string("cat - imprime o conteudo do arquivo\n");
-        terminal_write_string("write - escrever conteudo no arquivo");
-        terminal_write_string("rm - remove o arquivo");
+        terminal_write_string("write - escrever conteudo no arquivo\n");
+        terminal_write_string("rm - remove o arquivo\n");
 
     }else if (strcmp(input_buffer, "clear") == 0){
         terminal_clear();
@@ -282,6 +306,19 @@ static void terminal_execute_command(void){
     }else if(strcmp(input_buffer, "reboot") == 0){
         reboot();
 
+    }else if(strcmp(input_buffer, "history") == 0){
+
+        for(size_t i = 0; i < history_count; i++) terminal_printf("%d %s\n", (int)(i + 1), command_history[i]);
+        
+    }else if(strcmp(input_buffer, "ps") == 0){
+        
+        terminal_write_string("\nProcessos:\n");
+        process_list_all();
+
+    }else if(strcmp(input_buffer, "history") == 0){
+
+
+        
     }else if(strcmp(input_buffer, "ls") == 0){
         terminal_write_string("Arquivos: \n");
         filesystem_list_files(&terminal_fs);
