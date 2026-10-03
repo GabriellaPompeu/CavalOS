@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <string.h>
+#include "../filesystem/filesystem.h"
 
 extern uint32_t pmm_get_total_frames(void);
 extern uint32_t pmm_get_used_frames(void);
@@ -24,6 +25,7 @@ static uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
 static char input_buffer[INPUT_BUFFER_SIZE];
 static size_t input_length = 0;
+static filesystem terminal_fs;
 
 enum vga_color {
     BLACK = 0,
@@ -224,6 +226,23 @@ static void terminal_clear(void){
     }
 }
 
+static char* terminal_get_argument(void){
+    for(size_t i = 0; i < input_length; i++){
+        if(input_buffer[i] == ' ') return &input_buffer[i + 1];
+    }
+    return NULL;
+}
+
+static bool terminal_command_is(const char* command){
+    size_t length = strlen(command);
+
+    if(input_length < length) return false;
+
+    for(size_t i = 0; i < length; i++) if(input_buffer[i] != command[i]) return false;
+
+    return input_buffer[length] == ' ';
+}
+
 static void terminal_execute_command(void){
     if (input_length == 0) return;
 
@@ -235,6 +254,11 @@ static void terminal_execute_command(void){
         terminal_write_string("uptime - mostra quanto tempo o sistema esta ligado\n");
         terminal_write_string("mem - mostra status da memoria\n");
         terminal_write_string("reboot - reinicia o sistema\n");
+        terminal_write_string("ls - lista os arquivos\n");
+        terminal_write_string("touch - cria arquivo\n");
+        terminal_write_string("cat - imprime o conteudo do arquivo\n");
+        terminal_write_string("write - escrever conteudo no arquivo");
+        terminal_write_string("rm - remove o arquivo");
 
     }else if (strcmp(input_buffer, "clear") == 0){
         terminal_clear();
@@ -257,6 +281,86 @@ static void terminal_execute_command(void){
 
     }else if(strcmp(input_buffer, "reboot") == 0){
         reboot();
+
+    }else if(strcmp(input_buffer, "ls") == 0){
+        terminal_write_string("Arquivos: \n");
+        filesystem_list_files(&terminal_fs);
+
+    }else if(terminal_command_is("touch")){
+
+        char* name = terminal_get_argument();
+
+        if(name == NULL || name[0] == '\0') terminal_write_string("Uso: touch <nome>\n");
+        else{
+            fs_file* file = filesystem_create_file(&terminal_fs, name);
+
+            if(file == NULL) terminal_write_string("Nao foi possivel criar o arquivo. \n");
+            else terminal_printf("Arquivo criado: %s\n", name);
+        }
+
+    }else if(terminal_command_is("cat")){
+
+        char* name = terminal_get_argument();
+
+        if(name == NULL || name[0] == '\0') terminal_write_string("Uso: cat <nome>\n");
+        else{
+
+            fs_file* file = filesystem_find_file(&terminal_fs, name);
+            if(file == NULL) terminal_write_string("Arquivo nao encontrado.\n");
+            else{
+
+                uint8_t buffer[FS_MAX_FILE_SIZE + 1];
+                size_t bytes = filesystem_read_file(file, buffer, FS_MAX_FILE_SIZE);
+
+                buffer[bytes] = '\0';
+                terminal_write_string((char*)buffer); terminal_write_string("\n");
+            }
+        }
+
+    }else if(terminal_command_is("write")){
+
+        char* argument = terminal_get_argument();
+        if(argument == NULL || argument[0] == '\0') terminal_write_string("Uso: write <arquivo> <texto>\n");
+        else{
+
+            char* name = argument;
+            char* text = NULL;
+
+            for(size_t i = 0; argument[i] != '\0'; i++){
+                if(argument[i] == ' '){
+                    argument[i] = '\0';
+                    text = &argument[i + 1];
+                    break;
+                }
+            }
+
+            if(text == NULL || text[0] == '\0') terminal_write_string("Uso: write <arquivo> <texto>\n");
+            else{
+
+                fs_file* file = filesystem_find_file(&terminal_fs, name);
+                if(file == NULL) terminal_write_string("Arquivo nao encontrado.\n");
+                else{
+
+                    size_t text_size = strlen(text);
+
+                    if(filesystem_write_file(file, (const uint8_t*) text, text_size)) terminal_write_string("Arquivo escrito com sucesso.\n");
+                    else terminal_write_string("Erro ao escrever no arquivo.\n");
+                }
+            }
+        }
+
+    }else if(terminal_command_is("rm")){
+
+        char* name = terminal_get_argument();
+
+        if(name == NULL || name[0] == '\0') terminal_write_string("Uso: rm <arquivo>\n");
+        else{
+
+            if(filesystem_delete_file(&terminal_fs, name)) terminal_write_string("Arquivo removido com sucesso.\n");
+            else{
+                terminal_write_string("Arquivo nao encontrado.\n");
+            }
+        }
 
     }else{
         terminal_write_string("\nComando nao encontrado.\n");
@@ -282,6 +386,8 @@ void terminal_init(void){
 
     terminal_row = 0;
     terminal_column = 0;
+
+    filesystem_init(&terminal_fs);
 
     input_length = 0;
 
