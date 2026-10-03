@@ -118,6 +118,7 @@ void kernel_main(uint32_t magic, uint32_t info){
 
     terminal_write_string("==================================================\n");
 
+	process_init();
 
     /* =========================
        TESTE DOS CONSTRUTORES
