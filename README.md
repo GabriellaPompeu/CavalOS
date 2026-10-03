@@ -6,6 +6,14 @@ O projeto segue como referência a documentação e a metodologia do [OSDev Wiki
 
 ---
 
+## 🤍 Dedicatória
+
+Dedicamos este trabalho, com carinho e muita saudade, à memória de Raynner Meza de Andrade. Embora não esteja mais conosco para compartilhar este momento, sua amizade e as lembranças que construímos permanecerão sempre entre nós.
+
+Este trabalho também é uma forma de manter viva a sua memória.
+
+---
+
 ## 📌 Sobre o projeto
 
 O CavalOS está sendo desenvolvido de forma incremental, começando pela construção da infraestrutura básica do kernel e avançando gradualmente para recursos de gerenciamento de memória, interrupções e outros componentes de um sistema operacional.
