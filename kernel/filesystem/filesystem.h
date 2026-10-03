@@ -31,4 +31,8 @@ bool filesystem_write_file(fs_file* file, const uint8_t* data, size_t size);
 
 size_t filesystem_read_file(fs_file* file, uint8_t* buffer, size_t size);
 
+bool filesystem_delete_file(filesystem* fs, const char* name);
+
+void filesystem_list_files(filesystem* fs);
+
 #endif
