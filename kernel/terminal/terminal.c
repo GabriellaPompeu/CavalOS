@@ -88,6 +88,10 @@ static void terminal_scroll(void){
     }
 }
 
+filesystem* terminal_get_filesystem(void){
+    return &terminal_fs;
+}
+
 void terminal_putchar(char character){
     if (character == '\n'){
         terminal_column = 0;
@@ -315,11 +319,8 @@ static void terminal_execute_command(void){
         terminal_write_string("\nProcessos:\n");
         process_list_all();
 
-    }else if(strcmp(input_buffer, "history") == 0){
-
-
-        
     }else if(strcmp(input_buffer, "ls") == 0){
+        
         terminal_write_string("Arquivos: \n");
         filesystem_list_files(&terminal_fs);
 
