@@ -92,6 +92,38 @@ process_t* process_get_next_ready(void){
     return NULL;
 }
 
+process_t* scheduler_next(void){
+    process_t* current = process_get_current();
+
+    if(current == NULL) return process_get_next_ready();
+
+    process_t* candidate = current -> next;
+
+    while(candidate != NULL){
+        if(candidate -> state == PROCESS_READY) return candidate;
+        candidate = candidate -> next;
+    }
+
+    candidate = process_list;
+
+    while(candidate != current){
+        if(candidate -> state == PROCESS_READY) return candidate;
+        candidate = candidate -> next;
+    }
+    return NULL;
+}
+
+void scheduler_run_next(void){
+    process_t* next = scheduler_next();
+    if(next == NULL) return;
+
+    process_t* current = process_get_current();
+    if(current != NULL && current -> state == PROCESS_RUNNING) current -> state = PROCESS_READY;
+
+    next -> state = PROCESS_RUNNING;
+    process_set_current(next);
+}
+
 void process_set_current(process_t* process){
     if(process == NULL) return;
     current_process = process;
