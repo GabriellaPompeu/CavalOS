@@ -5,6 +5,7 @@
 #include "irq.h"
 #include "timer/timer.h"
 #include "keyboard/keyboard.h"
+#include "syscalls/syscall.h"
 
 extern void terminal_printf(const char* format, ...);
 
@@ -33,6 +34,7 @@ void idt_init(void){ //inicializa a idt zerando todos os atributos e define o en
 
     idt_set_gate(32, (uint32_t)irq0, 0x10, 0x8E);
     idt_set_gate(33, (uint32_t)irq1, 0x10, 0x8E);
+    //idt_set_gate(0x80, (uint32_t)syscall_handler, 0x10, 0xEE);
 
     asm volatile ("lidt %0" : : "m"(idtp));
 }
@@ -69,7 +71,7 @@ static void handle_simple_exception(struct registers* r){
 }
 
 void exception_handler(struct registers *r){
-    if (r->int_no < 32) {
+    if (r->int_no < 32){
         handle_simple_exception(r);
         // ainda vou criar a biblioteca stdio, então vamos poder por exemplo usar o printf para printas as mensagens
     }
