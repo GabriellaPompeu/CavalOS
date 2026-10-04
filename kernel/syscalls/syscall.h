@@ -6,6 +6,8 @@
 #define SYS_WRITE 1
 #define SYS_PS 2
 #define SYS_LS 3
+#define SYS_GETPID 4
+#define SYS_EXIT 5
 
 void syscall_init(void);
 
