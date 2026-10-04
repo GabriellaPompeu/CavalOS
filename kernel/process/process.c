@@ -15,6 +15,9 @@ void process_init(void){
     process_list = NULL;
     current_process = NULL;
     next_pid = 1;
+
+    current_process = process_create("kernel");
+    if(current_process != NULL) current_process -> state = PROCESS_RUNNING;
 }
 
 process_t* process_create(const char* name){
@@ -77,6 +80,21 @@ void process_list_all(void){
 
 process_t* process_get_current(void){
     return current_process;
+}
+
+process_t* process_get_next_ready(void){
+    process_t* current = process_list;
+
+    while(current != NULL){
+        if(current -> state == PROCESS_READY) return current;
+        current = current -> next;
+    }
+    return NULL;
+}
+
+void process_set_current(process_t* process){
+    if(process == NULL) return;
+    current_process = process;
 }
 
 void process_destroy(process_t* process){
