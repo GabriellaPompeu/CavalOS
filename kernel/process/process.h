@@ -30,6 +30,10 @@ process_t* process_get_current(void);
 
 process_t* get_current(void);
 
+process_t* process_get_next_ready(void);
+
+void process_set_current(process_t* process);
+
 void process_set_state(process_t* process, process_state_t state);
 
 #endif
