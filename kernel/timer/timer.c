@@ -1,5 +1,6 @@
 #include "timer.h"
 #include "../irq.h"
+#include "../process/process.h"
 
 extern void terminal_printf(const char* format, ...);
 
@@ -19,8 +20,7 @@ void timer_init(uint32_t frequency){
 
 void timer_handler(void){ 
     timer_ticks++;
-
-    //if(timer_ticks % 100 == 0) terminal_printf("1 segundo - ticks: %d\n", timer_ticks);
+    if(timer_ticks % 10 == 0) scheduler_run_next();
 }
 
 uint32_t timer_get_ticks(void){
