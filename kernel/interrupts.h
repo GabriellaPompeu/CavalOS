@@ -46,5 +46,6 @@ void idt_set_gate(uint8_t index, uint32_t handler, uint16_t selector, uint8_t ty
 
 extern void irq0(void);
 extern void irq1(void);
+extern void syscall_handler(void);
 
 #endif
