@@ -1,8 +1,7 @@
 #include "syscall.h"
 #include "../process/process.h"
-//#include "../filesystem/filesystem.h"
-
-extern void terminal_write_string(const char* string);
+#include "../filesystem/filesystem.h"
+#include "../terminal/terminal.h"
 
 void syscall_init(void){
 
@@ -19,7 +18,19 @@ int32_t syscall_dispatch(uint32_t number, uint32_t arg1, uint32_t arg2, uint32_t
             return 0;
         case SYS_PS: process_list_all();
             return 0;
-        case SYS_LS: return 0;
+        case SYS_LS: filesystem_list_files(terminal_get_filesystem());
+            return 0;
+        case SYS_GETPID:{
+            process_t* current = process_get_current();
+            if(current == NULL) return -1;
+            return current -> pid;
+        }
+        case SYS_EXIT:{
+            process_t* current = process_get_current();
+            if(current == NULL) return -1;
+            process_set_state(current, PROCESS_TERMINATED);
+            return 0;
+        }
         default: return -1;
     }
 }
