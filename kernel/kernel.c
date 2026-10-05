@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+
 #include "process/process.h"
 #include "multiboot/multiboot.h"
 #include "gdt.h"
@@ -47,6 +48,7 @@ static void teste_constructor(void){
     constructor_test = 42;
 }
 
+static filesystem root_filesystem;
 
 /* =========================
    KERNEL
@@ -97,13 +99,10 @@ void kernel_main(uint32_t magic, uint32_t info){
 	// multiboot_print_memory_map(mbi);
 
     idt_init();
-
     irq_init();
-
     keyboard_init();
-
     memory_map_init(info);
-
+    filesystem_init(&root_filesystem);
 
     /* =========================
        MENSAGEM INICIAL
