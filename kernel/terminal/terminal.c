@@ -364,6 +364,7 @@ static void terminal_execute_command(void){
         terminal_write_string("cat     - imprime o conteudo do arquivo\n");
         terminal_write_string("write   - escrever conteudo no arquivo\n");
         terminal_write_string("rm      - remove o arquivo\n");
+        terminal_write_string("calc    - calcula dois valores\n");
 
     }else if (strcmp(input_buffer, "clear") == 0){
         terminal_clear();
@@ -439,6 +440,7 @@ static void terminal_execute_command(void){
             if(op == '+') terminal_printf("%d\n", n1 + n2);
             else if(op == '-') terminal_printf("%d\n", n1 - n2);
             else if(op == '*') terminal_printf("%d\n", n1 * n2);
+            else if((op == '/') && (n2 != 0)) terminal_printf("%d\n", n1 / n2);
             else terminal_write_string("Operacao invalida\n");
         }
     }else if(terminal_command_is("touch")){
