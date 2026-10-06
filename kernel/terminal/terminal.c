@@ -12,6 +12,8 @@ extern uint32_t pmm_get_used_frames(void);
 extern uint32_t pmm_get_free_frames(void);
 extern void reboot(void);
 
+extern int atoi(const char*);
+
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
@@ -406,6 +408,39 @@ static void terminal_execute_command(void){
         terminal_show_horse();
         return;
 
+    }else if(terminal_command_is("calc")){
+
+        char* argument = terminal_get_argument();
+
+        if(argument == NULL || argument[0] == '\0') terminal_write_string("Uso: calc <numero> <operacao> <numero>\n");
+        else{
+
+            int n1;
+            int n2;
+            char op;
+
+            n1 = atoi(argument);
+
+            while(*argument != '\0' && *argument != ' ')argument++;
+
+            if(*argument == '\0'){
+                terminal_write_string("Uso: calc <numero> <operacao> <numero>\n");
+                return;
+            }
+
+            argument++;
+
+            op = argument[0];
+
+            argument += 2;
+
+            n2 = atoi(argument);
+
+            if(op == '+') terminal_printf("%d\n", n1 + n2);
+            else if(op == '-') terminal_printf("%d\n", n1 - n2);
+            else if(op == '*') terminal_printf("%d\n", n1 * n2);
+            else terminal_write_string("Operacao invalida\n");
+        }
     }else if(terminal_command_is("touch")){
 
         char* name = terminal_get_argument();
