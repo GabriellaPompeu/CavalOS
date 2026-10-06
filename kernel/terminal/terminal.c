@@ -21,6 +21,7 @@ extern void reboot(void);
 #define HISTORY_MAX 16
 static char command_history[HISTORY_MAX][INPUT_BUFFER_SIZE];
 static size_t history_count = 0;
+static size_t history_position = 0;
 
 static size_t terminal_row;
 static size_t terminal_column;
@@ -124,6 +125,40 @@ static void terminal_show_horse(void){
     terminal_write_string("                       Easter egg\n\n");
 
     terminal_color = original_color;
+}
+
+static void terminal_input_replace(const char* command){
+    while (input_length > 0){
+        terminal_input_backspace();
+    }
+
+    for (size_t i = 0; command[i] != '\0'; i++){
+        terminal_input_char(command[i]);
+    }
+}
+
+void terminal_history_up(void){
+    if (history_count == 0) return;
+
+    if (history_position == 0)
+        return;
+
+    history_position--;
+
+    terminal_input_replace(command_history[history_position]);
+}
+
+void terminal_history_down(void){
+    if (history_count == 0) return;
+
+    if (history_position < history_count - 1){
+        history_position++;
+        terminal_input_replace(command_history[history_position]);
+        return;
+    }
+
+    history_position = history_count;
+    terminal_input_replace("");
 }
 
 filesystem* terminal_get_filesystem(void){
@@ -286,6 +321,7 @@ static void terminal_history_add(const char* command){
 
         strcpy(command_history[HISTORY_MAX - 1], command);
     }
+    history_position = history_count;
 }
 
 static char* terminal_get_argument(void){
@@ -353,8 +389,8 @@ static void terminal_execute_command(void){
 
         for(size_t i = 0; i < history_count; i++) terminal_printf("%d %s\n", (int)(i + 1), command_history[i]);
         
-    }else if(strcmp(input_buffer, "about")){
-        terminal_write_string("\nCavalOS\nSistema Operacional educacional\nArquitetura: i686\nDesenvolvido em C e Assembly");
+    }else if(strcmp(input_buffer, "about") == 0){
+        terminal_write_string("\nCavalOS\nSistema Operacional educacional\nArquitetura: i686\nDesenvolvido em C e Assembly\n");
 
     }else if(strcmp(input_buffer, "ps") == 0){
         
