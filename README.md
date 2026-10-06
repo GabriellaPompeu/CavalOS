@@ -50,7 +50,10 @@ CavalOS/
 ├── kernel
 │   ├── filesystem
 │   │   ├── filesystem.c
-│   │   └── filesystem.h
+│   │   ├── filesystem.h
+│   │   └── filesystem.o
+│   ├── gdt_asm.o
+│   ├── gdt_asm.s
 │   ├── gdt.c
 │   ├── gdt.h
 │   ├── gdt.o
@@ -73,7 +76,6 @@ CavalOS/
 │   ├── linker.ld
 │   ├── loader.o
 │   ├── loader.s
-│   ├── Makefile
 │   ├── memory
 │   │   ├── heap.c
 │   │   ├── heap.h
@@ -92,10 +94,17 @@ CavalOS/
 │   │   ├── multiboot.c
 │   │   ├── multiboot.h
 │   │   └── multiboot.o
+│   ├── process
+│   │   ├── process.c
+│   │   ├── process.h
+│   │   └── process.o
 │   ├── qemu.log
-│   ├── README.md
 │   ├── stack_protector.c
 │   ├── stack_protector.o
+│   ├── syscalls
+│   │   ├── syscall.c
+│   │   ├── syscall.h
+│   │   └── syscall.o
 │   ├── terminal
 │   │   ├── terminal.c
 │   │   ├── terminal.h
@@ -120,6 +129,7 @@ CavalOS/
 │       └── lib
 │           └── libk.a
 └── timer.c
+
 ```
 
 A estrutura pode mudar conforme novos subsistemas forem adicionados ao kernel.
