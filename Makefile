@@ -13,7 +13,7 @@ LIBK_PATH = $(SYSROOT)/usr/lib
 LIBK_OBJECTS = libk/string.o
 
 KERNEL = mykernel.bin
-ISO = myos.iso
+ISO = CavalOS.iso
 
 SYSROOT = $(PWD)/sysroot
 
