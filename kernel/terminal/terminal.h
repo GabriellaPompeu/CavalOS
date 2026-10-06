@@ -16,6 +16,8 @@ void terminal_printf(const char* format, ...);
 void terminal_input_char(char character);
 void terminal_input_enter(void);
 void terminal_input_backspace(void);
+void terminal_history_up(void);
+void terminal_history_down(void);
 //void terminal_clear(void);
 
 #endif
