@@ -121,16 +121,6 @@ void kernel_main(uint32_t magic, uint32_t info){
     process_init();
 
     syscall_init();
-    syscall(SYS_WRITE, (uint32_t)"Testando syscall CavalOS!\n", 0, 0);
-
-    /* =========================
-       TESTE DOS CONSTRUTORES
-       ========================= */
-
-    if (constructor_test == 42)
-        terminal_write_string("Construtor executado com sucesso!\n");
-    else
-        terminal_write_string("Deu ruim cr...\n");
 
     terminal_input_enter();
 
