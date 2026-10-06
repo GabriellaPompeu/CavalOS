@@ -55,4 +55,6 @@ void gdt_set_entry(int index, uint32_t base, uint32_t limit, uint8_t access, uin
 
 void gdt_init(void);
 
+void gdt_flush(void);
+
 #endif 

@@ -41,4 +41,5 @@ void gdt_init(void){
     gdt_set_entry(4, 0, 0xFFFFF, 0xF2, 0xCF);
 
     tss_init();
+    gdt_flush();
 }

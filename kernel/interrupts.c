@@ -32,8 +32,8 @@ void idt_init(void){ //inicializa a idt zerando todos os atributos e define o en
     idtp.limit = sizeof(idt) - 1;
     idtp.base = (uint32_t)&idt;
 
-    idt_set_gate(32, (uint32_t)irq0, 0x10, 0x8E);
-    idt_set_gate(33, (uint32_t)irq1, 0x10, 0x8E);
+    idt_set_gate(32, (uint32_t)irq0, 0x08, 0x8E);
+    idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E);
     //idt_set_gate(0x80, (uint32_t)syscall_handler, 0x10, 0xEE);
 
     asm volatile ("lidt %0" : : "m"(idtp));
