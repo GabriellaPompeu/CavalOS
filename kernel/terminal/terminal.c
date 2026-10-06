@@ -88,6 +88,44 @@ static void terminal_scroll(void){
     }
 }
 
+static void terminal_show_horse(void){
+    const char* horse[] = {
+        "                            /\\",
+        "                           /  \\___",
+        "                          /  o    \\",
+        "                         /     ____)",
+        "                        /     /",
+        "        _______________/     /",
+        "   ~~~ /                     |",
+        "  ~~  |                      |",
+        " ~    |                     /",
+        "       \\   _____________   /",
+        "        | |             | |",
+        "        | |             | |",
+        "        |_|             |_|",
+    };
+    const size_t horse_lines = sizeof(horse) / sizeof(horse[0]);
+
+    uint8_t original_color = terminal_color;
+
+    terminal_putchar('\n');
+
+    terminal_color = vga_entry_color(LIGHT_BROWN, BLACK);
+    for (size_t i = 0; i < horse_lines; i++){
+        terminal_write_string("                ");
+        terminal_write_string(horse[i]);
+        terminal_putchar('\n');
+    }
+
+    terminal_color = vga_entry_color(LIGHT_CYAN, BLACK);
+    terminal_write_string("\n          Iiirraaaa! Voce encontrou o cavalo secreto do CavalOS\n");
+
+    terminal_color = vga_entry_color(DARK_GREY, BLACK);
+    terminal_write_string("                       Easter egg\n\n");
+
+    terminal_color = original_color;
+}
+
 filesystem* terminal_get_filesystem(void){
     return &terminal_fs;
 }
@@ -237,7 +275,7 @@ static void terminal_clear(void){
 
 static void terminal_history_add(const char* command){
 
-    if(command == NULL || command[0] == '\0') return;
+    if(command == NULL || command[0] == '\0' || strncmp(command, "cavalo", 6) == 0) return;
 
     if(history_count < HISTORY_MAX){
         strcpy(command_history[history_count], command);
@@ -274,19 +312,20 @@ static void terminal_execute_command(void){
 
     if (strcmp(input_buffer, "help") == 0){
         terminal_write_string("\nComandos disponiveis:\n");
-        terminal_write_string("help - mostra esta mensagem\n");
-        terminal_write_string("clear - limpa a tela\n");
-        terminal_write_string("ticks - mostra os ticks do timer\n");
-        terminal_write_string("uptime - mostra quanto tempo o sistema esta ligado\n");
-        terminal_write_string("mem - mostra status da memoria\n");
-        terminal_write_string("reboot - reinicia o sistema\n");
+        terminal_write_string("help    - mostra esta mensagem\n");
+        terminal_write_string("clear   - limpa a tela\n");
+        terminal_write_string("ticks   - mostra os ticks do timer\n");
+        terminal_write_string("uptime  - mostra quanto tempo o sistema esta ligado\n");
+        terminal_write_string("mem     - mostra status da memoria\n");
+        terminal_write_string("reboot  - reinicia o sistema\n");
         terminal_write_string("history - mostra o historico\n");
-        terminal_write_string("ps - lista os processos\n");
-        terminal_write_string("ls - lista os arquivos\n");
-        terminal_write_string("touch - cria arquivo\n");
-        terminal_write_string("cat - imprime o conteudo do arquivo\n");
-        terminal_write_string("write - escrever conteudo no arquivo\n");
-        terminal_write_string("rm - remove o arquivo\n");
+        terminal_write_string("about   - sobre o CavalOS\n");
+        terminal_write_string("ps      - lista os processos\n");
+        terminal_write_string("ls      - lista os arquivos\n");
+        terminal_write_string("touch   - cria arquivo\n");
+        terminal_write_string("cat     - imprime o conteudo do arquivo\n");
+        terminal_write_string("write   - escrever conteudo no arquivo\n");
+        terminal_write_string("rm      - remove o arquivo\n");
 
     }else if (strcmp(input_buffer, "clear") == 0){
         terminal_clear();
@@ -314,6 +353,9 @@ static void terminal_execute_command(void){
 
         for(size_t i = 0; i < history_count; i++) terminal_printf("%d %s\n", (int)(i + 1), command_history[i]);
         
+    }else if(strcmp(input_buffer, "about")){
+        terminal_write_string("\nCavalOS\nSistema Operacional educacional\nArquitetura: i686\nDesenvolvido em C e Assembly");
+
     }else if(strcmp(input_buffer, "ps") == 0){
         
         terminal_write_string("\nProcessos:\n");
@@ -323,6 +365,10 @@ static void terminal_execute_command(void){
         
         terminal_write_string("Arquivos: \n");
         filesystem_list_files(&terminal_fs);
+
+    }else if (strcmp(input_buffer, "cavalo") == 0){
+        terminal_show_horse();
+        return;
 
     }else if(terminal_command_is("touch")){
 
@@ -399,6 +445,9 @@ static void terminal_execute_command(void){
                 terminal_write_string("Arquivo nao encontrado.\n");
             }
         }
+
+    }else if(terminal_command_is("botafogo")){
+        terminal_write_string("\nbostafogo nao e time nao, e bairro\n");
 
     }else{
         terminal_write_string("\nComando nao encontrado.\n");
