@@ -5,6 +5,8 @@
 
 #define KEYBOARD_DATA_PORT 0x60
 
+static uint8_t extended_scancode = 0;
+
 static uint8_t keyboard_read_scancode(void){
     uint8_t scancode;
 
@@ -76,6 +78,39 @@ void keyboard_init(void){
 void keyboard_handler(void){
     uint8_t scancode = keyboard_read_scancode();
 
+    /*
+     * Teclas especiais usam o prefixo 0xE0.
+     */
+    if (scancode == 0xE0){
+        extended_scancode = 1;
+        return;
+    }
+
+    /*
+     * Trata as teclas que vieram depois de 0xE0.
+     */
+    if (extended_scancode){
+        extended_scancode = 0;
+
+        /* Ignora soltura da tecla */
+        if (scancode & 0x80) return;
+
+        if (scancode == 0x48){
+            terminal_history_up();
+            return;
+        }
+
+        if (scancode == 0x50){
+            terminal_history_down();
+            return;
+        }
+
+        return;
+    }
+
+    /*
+     * Ignora soltura de teclas normais.
+     */
     if (scancode & 0x80) return;
 
     if (scancode == 0x0E){
@@ -90,5 +125,6 @@ void keyboard_handler(void){
 
     char character = scancode_to_ascii(scancode);
 
-    if (character != 0) terminal_input_char(character);
+    if (character != 0)
+        terminal_input_char(character);
 }
